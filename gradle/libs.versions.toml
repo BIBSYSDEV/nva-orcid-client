@@ -1,5 +1,5 @@
 [versions]
-nva = "1.24.18"
+nva = "1.28.0"
 hamcrest = '2.2'
 junit5 = '5.8.2'
 mockito = '4.5.1'
