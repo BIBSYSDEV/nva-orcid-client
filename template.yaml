@@ -82,7 +82,7 @@ Resources:
           Properties:
             RestApiId: !Ref OrcidGatewayAPI
             Method: get
-            Path: /orcid
+            Path: /
 
   OrcidClientBasePathMapping:
     Type: AWS::ApiGateway::BasePathMapping
