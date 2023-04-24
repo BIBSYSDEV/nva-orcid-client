@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  Lambda sending emails
+  Services and lambda for storing and retrieving orcid credentials
 
 Parameters:
   CognitoAuthorizerArn:
@@ -68,7 +68,7 @@ Resources:
   StoreOrcidCredentialsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: email-service
+      CodeUri: orcid-rest
       Handler: no.sikt.nva.orcid.handlers.StoreOrcidCredentialsFunction::handleRequest
       Role: !GetAtt LambdaRole.Arn
       Runtime: java11

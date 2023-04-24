@@ -1,0 +1,1 @@
+https://dev.nva.sikt.no/my-page/my-profile?access_token=***ACCESS_TOKEN***&token_type=bearer&expires_in=599&tokenVersion=1&persistent=true&id_token=****JWT_ID_TOKEN***&tokenId=21385611
