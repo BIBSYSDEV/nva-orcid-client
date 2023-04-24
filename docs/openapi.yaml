@@ -5,7 +5,7 @@ info:
   license:
     name: MIT
 paths:
-  /orcid:
+  /:
     get:
       summary: 'Stores orcid credentials and redirects to NVA-frontend'
       operationId: getRedirectToFrontend
@@ -14,6 +14,7 @@ paths:
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${StoreOrcidCredentialsFunction.Arn}/invocations
+        responses: { }
         httpMethod: GET
         type: AWS_PROXY
       responses:
