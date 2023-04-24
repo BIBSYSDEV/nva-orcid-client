@@ -1,0 +1,51 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: 'NVA orcid client api'
+  license:
+    name: MIT
+paths:
+  /orcid:
+    get:
+      summary: 'Stores orcid credentials and redirects to NVA-frontend'
+      operationId: getRedirectToFrontend
+      tags:
+        - orcid
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${StoreOrcidCredentialsFunction.Arn}/invocations
+        httpMethod: GET
+        type: AWS_PROXY
+      responses:
+        '200':
+          description: 'Orcid something'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '500':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+components:
+  schemas:
+    Response:
+      type: string
+    Problem:
+      type: object
+      description: Problem object model
+      properties:
+        title:
+          type: string
+          description: Title
+        status:
+          type: integer
+          description: Kind of problem
+        detail:
+          type: string
+          description: details of problem
+        requestId:
+          type: string
+          description: Identifier of the request causing the problem

@@ -1,0 +1,5 @@
+enableFeaturePreview('VERSION_CATALOGS')
+
+rootProject.name = 'nva-orcid-client'
+include 'orcid-rest'
+

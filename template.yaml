@@ -1,0 +1,93 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Lambda sending emails
+
+Parameters:
+  CognitoAuthorizerArn:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Description: Reference to Cognito UserPool for the stage
+    Default: CognitoAuthorizerArn
+  CustomDomain:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Description: The default domain that is used as from_address
+    Default: CustomDomain
+  CustomDomainBasePath:
+    Type: String
+    Description: Base path mapping in CustomDomain
+    Default: orcid
+  ApiDomain:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Description: The Api domain
+    Default: /NVA/ApiDomain
+
+Globals:
+  Function:
+    Timeout: 900
+    MemorySize: 1798
+    Runtime: java11
+
+Resources:
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ lambda.amazonaws.com ]
+            Action: [ 'sts:AssumeRole' ]
+      Policies:
+        - PolicyName: writeLog
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*'
+
+  OrcidGatewayAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: v1
+      EndpointConfiguration:
+        Type: REGIONAL
+      MethodSettings:
+        - ResourcePath: /orcid
+          HttpMethod: GET
+      DefinitionBody:
+        'Fn::Transform':
+          Name: AWS::Include
+          Parameters:
+            Location: ./docs/openapi.yaml
+
+  StoreOrcidCredentialsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: email-service
+      Handler: no.sikt.nva.orcid.handlers.StoreOrcidCredentialsFunction::handleRequest
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: java11
+      MemorySize: 1798
+      Environment:
+        Variables:
+          ALLOWED_ORIGIN: '*'
+      Events:
+        getRedirectToFrontend:
+          Type: Api
+          Properties:
+            RestApiId: !Ref OrcidGatewayAPI
+            Method: get
+            Path: /orcid
+
+  OrcidClientBasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      BasePath: !Sub ${CustomDomainBasePath}
+      DomainName: !Ref ApiDomain
+      RestApiId: !Ref OrcidGatewayAPI
+      Stage: !Ref OrcidGatewayAPI.Stage
