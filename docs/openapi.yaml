@@ -9,6 +9,12 @@ paths:
     get:
       summary: 'Stores orcid credentials and redirects to NVA-frontend'
       operationId: getRedirectToFrontend
+      security:
+        - CognitoUserPool: [
+          'https://api.nva.unit.no/scopes/backend',
+          'https://api.nva.unit.no/scopes/frontend',
+          'aws.cognito.signin.user.admin'
+        ]
       tags:
         - orcid
       x-amazon-apigateway-integration:
