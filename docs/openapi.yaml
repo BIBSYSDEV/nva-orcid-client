@@ -72,24 +72,20 @@ components:
         orcid:
           description: Full url of orcid
           type: string
-          format: url
         access_token:
           type: string
         token_type:
           type: string
         expires_in:
           type: number
-          format: int32
         tokenVersion:
           type: number
         persistent:
           type: boolean
         id_token:
           type: string
-          format: jwt
         tokenId:
           type: number
-          format: int32
     Problem:
       type: object
       description: Problem object model
