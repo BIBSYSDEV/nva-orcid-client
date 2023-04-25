@@ -78,15 +78,11 @@ Resources:
       TableName: !Sub nva-orcid-${AWS::StackName}
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
-        - AttributeName: PK0
-          AttributeType: S
-        - AttributeName: SK0
+        - AttributeName: orcid
           AttributeType: S
       KeySchema:
-        - AttributeName: PK0
+        - AttributeName: orcid
           KeyType: HASH
-        - AttributeName: SK0
-          KeyType: RANGE
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
       PointInTimeRecoverySpecification:
