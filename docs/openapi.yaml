@@ -45,16 +45,35 @@ paths:
               tokenId: 11111111
 
       responses:
-        '201':
+        201:
           description: 'Orcid credentials sucessfully stored'
           content:
             application/json: {}
-        '500':
-          description: Unexpected error
+        400:
+          description: Bad request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Problem'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        409:
+          description: Conflict, credentials for orcid already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        502:
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+
 components:
   schemas:
     OrcidCredentials:
