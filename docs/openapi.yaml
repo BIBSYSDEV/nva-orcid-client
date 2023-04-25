@@ -4,11 +4,15 @@ info:
   title: 'NVA orcid client api'
   license:
     name: MIT
+x-amazon-apigateway-request-validators:
+  body_only:
+    validateRequestBody: true
+    validateRequestParameters: false
 paths:
   /:
-    get:
+    post:
       summary: 'Stores orcid credentials and redirects to NVA-frontend'
-      operationId: getRedirectToFrontend
+      operationId: postOrcidCredentials
       security:
         - CognitoUserPool: [
           'https://api.nva.unit.no/scopes/backend',
@@ -17,19 +21,34 @@ paths:
         ]
       tags:
         - orcid
+      x-amazon-apigateway-request-validator: body_only
       x-amazon-apigateway-integration:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${StoreOrcidCredentialsFunction.Arn}/invocations
         responses: { }
         httpMethod: POST
         type: AWS_PROXY
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrcidCredentials'
+            example:
+              orcid: https://orcid.org/0000-0001-5727-2427
+              access_token: 00000000-0000-0000-0000-000000000000
+              token_type: bearer
+              expires_in: 599
+              tokenVersion: 1
+              persistent: true
+              id_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+              tokenId: 11111111
+
       responses:
-        '200':
-          description: 'Orcid something'
+        '201':
+          description: 'Orcid credentials sucessfully stored'
           content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response'
+            application/json: {}
         '500':
           description: Unexpected error
           content:
@@ -38,8 +57,39 @@ paths:
                 $ref: '#/components/schemas/Problem'
 components:
   schemas:
-    Response:
-      type: string
+    OrcidCredentials:
+      type: object
+      required:
+        - orcid
+        - access_token
+        - token_type
+        - expires_in
+        - tokenVersion
+        - persistent
+        - id_token
+        - tokenId
+      properties:
+        orcid:
+          description: Full url of orcid
+          type: string
+          format: url
+        access_token:
+          type: string
+        token_type:
+          type: string
+        expires_in:
+          type: number
+          format: int32
+        tokenVersion:
+          type: number
+        persistent:
+          type: boolean
+        id_token:
+          type: string
+          format: jwt
+        tokenId:
+          type: number
+          format: int32
     Problem:
       type: object
       description: Problem object model

@@ -77,11 +77,11 @@ Resources:
         Variables:
           ALLOWED_ORIGIN: '*'
       Events:
-        getRedirectToFrontend:
+        postOrcidCredentials:
           Type: Api
           Properties:
             RestApiId: !Ref OrcidGatewayAPI
-            Method: get
+            Method: post
             Path: /
 
   OrcidClientBasePathMapping:
