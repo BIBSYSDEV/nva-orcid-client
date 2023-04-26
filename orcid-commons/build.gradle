@@ -1,0 +1,16 @@
+apply plugin: 'io.freefair.lombok'
+
+dependencies {
+    implementation project(":orcid-testutils")
+
+    implementation libs.nva.core
+
+    implementation libs.aws.sdk.dynamodb
+
+    implementation libs.jackson.databind
+    implementation libs.jackson.annotations
+    implementation libs.jackson.datatype.jsr310
+
+    testImplementation libs.nva.testutils
+
+}

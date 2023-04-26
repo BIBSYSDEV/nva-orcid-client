@@ -1,0 +1,13 @@
+dependencies {
+    implementation project(":orcid-constants")
+    implementation libs.nva.core
+
+    implementation libs.aws.java.sdk.core
+    implementation libs.aws.sdk.dynamodb
+    implementation(libs.dynamodDbLocal) {
+        exclude group: 'com.amazonaws', module: 'aws-java-sdk-dynamodb'
+        exclude group: 'com.amazonaws', module: 'aws-java-sdk-core'
+    }
+    implementation libs.bundles.testing
+    testImplementation libs.nva.testutils
+}
