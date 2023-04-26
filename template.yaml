@@ -28,6 +28,8 @@ Globals:
     Runtime: java11
 
 Resources:
+
+  #==============================ROLES==============================================================
   LambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -50,6 +52,44 @@ Resources:
                   - logs:PutLogEvents
                 Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*'
 
+  DatabaseAccessLambdaPermissions:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub DatabaseAccessLambdaPermissions-${AWS::StackName}
+      Roles:
+        - !Ref LambdaRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:*
+            Resource:
+              - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/nva-orcid-${AWS::StackName}
+              - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/nva-orcid-${AWS::StackName}/index/*
+
+  #===========================DynamoDB Table========================================================
+
+  NvaOrcidTable:
+    Type: AWS::DynamoDB::Table
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Delete # DeletionPolicy should be added on main branch stacks through use of stack policy
+    Properties:
+      TableName: !Sub nva-orcid-${AWS::StackName}
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: orcid
+          AttributeType: S
+      KeySchema:
+        - AttributeName: orcid
+          KeyType: HASH
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
+  #================================ApiGateway ======================================================
+
   OrcidGatewayAPI:
     Type: AWS::Serverless::Api
     Properties:
@@ -65,6 +105,8 @@ Resources:
           Parameters:
             Location: ./docs/openapi.yaml
 
+  #================================ApiGateway handlers==============================================
+
   StoreOrcidCredentialsFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -76,6 +118,7 @@ Resources:
       Environment:
         Variables:
           ALLOWED_ORIGIN: '*'
+          TABLE_NAME: !Ref NvaOrcidTable
       Events:
         postOrcidCredentials:
           Type: Api
@@ -83,6 +126,8 @@ Resources:
             RestApiId: !Ref OrcidGatewayAPI
             Method: post
             Path: /
+
+  #===========================BasePathMappings======================================================
 
   OrcidClientBasePathMapping:
     Type: AWS::ApiGateway::BasePathMapping
