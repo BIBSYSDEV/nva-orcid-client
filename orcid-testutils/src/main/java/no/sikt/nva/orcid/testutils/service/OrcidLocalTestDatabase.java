@@ -13,7 +13,7 @@ import java.util.List;
 import static no.sikt.nva.orcid.constants.OrcidConstants.ORCID_PRIMARY_PARTITION_KEY;
 
 @JacocoGenerated
-public class OrcidLocalTest {
+public class OrcidLocalTestDatabase {
 
     public static final ScalarAttributeType STRING_TYPE = ScalarAttributeType.S;
     protected AmazonDynamoDB client;
