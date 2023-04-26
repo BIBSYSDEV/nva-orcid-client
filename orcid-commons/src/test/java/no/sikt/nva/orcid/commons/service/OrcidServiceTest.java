@@ -9,7 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-public class OrcidServiceTestDatabase extends OrcidLocalTestDatabase {
+public class OrcidServiceTest extends OrcidLocalTestDatabase {
 
     private static final String ORCID_TABLE_NAME = "someOrcidTableName";
 
