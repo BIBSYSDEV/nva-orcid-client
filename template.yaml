@@ -120,11 +120,11 @@ Resources:
           ALLOWED_ORIGIN: '*'
           TABLE_NAME: !Ref NvaOrcidTable
       Events:
-        getRedirectToFrontend:
+        postOrcidCredentials:
           Type: Api
           Properties:
             RestApiId: !Ref OrcidGatewayAPI
-            Method: get
+            Method: post
             Path: /
 
   #===========================BasePathMappings======================================================
