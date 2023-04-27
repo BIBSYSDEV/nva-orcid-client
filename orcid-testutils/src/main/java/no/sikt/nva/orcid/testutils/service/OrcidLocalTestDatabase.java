@@ -1,8 +1,14 @@
 package no.sikt.nva.orcid.testutils.service;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.model.*;
+
 import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded;
+import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
+import com.amazonaws.services.dynamodbv2.model.BillingMode;
+import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
+import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
+import com.amazonaws.services.dynamodbv2.model.KeyType;
+import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
 import nva.commons.core.JacocoGenerated;
 import org.junit.jupiter.api.AfterEach;
 
