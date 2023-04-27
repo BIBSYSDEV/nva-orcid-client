@@ -25,6 +25,5 @@ public class StoreOrcidCredentialsFunctionTest {
     public void dummyTest() throws IOException {
         var inputStream = new ByteArrayInputStream("{\"message\": \"hello world\"}".getBytes());
         handler.handleRequest(inputStream, outputStream, CONTEXT);
-        var something = "hehe";
     }
 }

@@ -9,5 +9,4 @@ dependencies {
         exclude group: 'com.amazonaws', module: 'aws-java-sdk-core'
     }
     implementation libs.bundles.testing
-    testImplementation libs.nva.testutils
 }
