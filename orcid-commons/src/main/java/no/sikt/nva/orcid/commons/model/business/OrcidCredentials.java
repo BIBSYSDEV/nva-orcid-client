@@ -27,25 +27,25 @@ public class OrcidCredentials {
     @JsonProperty("orcid")
     private final URI orcid;
     @JsonProperty("access_token")
-    private String accessToken;
+    private final String accessToken;
 
     @JsonProperty("token_type")
-    private String tokenType;
+    private final String tokenType;
 
     @JsonProperty("expires_in")
-    private int expiresIn;
+    private final int expiresIn;
 
     @JsonProperty("tokenVersion")
-    private String tokenVersion;
+    private final String tokenVersion;
 
     @JsonProperty("persistent")
-    private boolean persistent;
+    private final boolean persistent;
 
     @JsonProperty("id_token")
-    private String idToken;
+    private final String idToken;
 
     @JsonProperty("tokenId")
-    private int tokenId;
+    private final int tokenId;
 
 
     @JacocoGenerated
