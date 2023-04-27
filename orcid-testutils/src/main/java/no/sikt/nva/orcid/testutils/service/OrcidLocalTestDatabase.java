@@ -1,7 +1,7 @@
 package no.sikt.nva.orcid.testutils.service;
 
+import static no.sikt.nva.orcid.constants.OrcidConstants.ORCID_PRIMARY_PARTITION_KEY;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-
 import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.BillingMode;
@@ -9,14 +9,11 @@ import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ScalarAttributeType;
-import nva.commons.core.JacocoGenerated;
-import org.junit.jupiter.api.AfterEach;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import static no.sikt.nva.orcid.constants.OrcidConstants.ORCID_PRIMARY_PARTITION_KEY;
+import nva.commons.core.JacocoGenerated;
+import org.junit.jupiter.api.AfterEach;
 
 @JacocoGenerated
 public class OrcidLocalTestDatabase {
@@ -43,10 +40,10 @@ public class OrcidLocalTestDatabase {
 
     private CreateTableRequest createTableRequest() {
         return new CreateTableRequest()
-                .withTableName(orcidTableName)
-                .withAttributeDefinitions(attributeDefinitions())
-                .withKeySchema(primaryKeySchema())
-                .withBillingMode(BillingMode.PAY_PER_REQUEST);
+                   .withTableName(orcidTableName)
+                   .withAttributeDefinitions(attributeDefinitions())
+                   .withKeySchema(primaryKeySchema())
+                   .withBillingMode(BillingMode.PAY_PER_REQUEST);
     }
 
     private AttributeDefinition[] attributeDefinitions() {
@@ -73,7 +70,7 @@ public class OrcidLocalTestDatabase {
 
     private AttributeDefinition newAttribute(String keyName) {
         return new AttributeDefinition()
-                .withAttributeName(keyName)
-                .withAttributeType(STRING_TYPE);
+                   .withAttributeName(keyName)
+                   .withAttributeType(STRING_TYPE);
     }
 }

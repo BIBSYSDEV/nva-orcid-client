@@ -7,7 +7,6 @@ import static no.unit.nva.testutils.RandomDataGenerator.randomInteger;
 import static no.unit.nva.testutils.RandomDataGenerator.randomString;
 import static no.unit.nva.testutils.RandomDataGenerator.randomUri;
 
-
 public final class RandomOrcidCredentialsGenerator {
 
     public static OrcidCredentials randomOrcidCredentials() {

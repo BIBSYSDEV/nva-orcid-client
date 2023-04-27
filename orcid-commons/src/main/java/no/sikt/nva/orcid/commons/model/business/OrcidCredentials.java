@@ -1,22 +1,19 @@
 package no.sikt.nva.orcid.commons.model.business;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.net.URI;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.net.URI;
-
-
 @Data
 @Builder(
-        builderClassName = "OrcidCredentialsBuilder",
-        toBuilder = true,
-        builderMethodName = "builder",
-        buildMethodName = "build",
-        setterPrefix = "with"
+    builderClassName = "OrcidCredentialsBuilder",
+    toBuilder = true,
+    builderMethodName = "builder",
+    buildMethodName = "build",
+    setterPrefix = "with"
 )
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class OrcidCredentials {
@@ -43,5 +40,4 @@ public class OrcidCredentials {
 
     @JsonProperty("tokenId")
     private final int tokenId;
-
 }
