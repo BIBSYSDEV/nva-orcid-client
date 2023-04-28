@@ -62,10 +62,10 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
 
     @Test
     public void shouldThrowExceptionIfDynamoIsWorking() {
-        var orcidCredentials = randomOrcidCredentials();
         client = mock(AmazonDynamoDB.class);
         doThrow(RuntimeException.class).when(client).transactWriteItems(any());
         orcidService = new OrcidServiceImpl(ORCID_TABLE_NAME, client, clock);
+        var orcidCredentials = randomOrcidCredentials();
         assertThrows(TransactionFailedException.class, () -> orcidService.createOrcidCredentials(orcidCredentials));
     }
 
@@ -95,9 +95,8 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
         client = mock(AmazonDynamoDB.class);
         when(client.getItem(any()))
             .thenThrow(RuntimeException.class)
-            .thenReturn( itemResult);
+            .thenReturn(itemResult);
         orcidService = new OrcidServiceImpl(ORCID_TABLE_NAME, client, clock);
-
 
         var persistedCredentials = orcidService.createOrcidCredentials(orcidCredentials.copy());
         assertThat(persistedCredentials, is(equalTo(orcidCredentials)));

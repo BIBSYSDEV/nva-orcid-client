@@ -49,9 +49,9 @@ public class OrcidServiceImpl implements OrcidService {
     }
 
     private OrcidCredentials fetchSavedOrcidCredentials(OrcidCredentials orcidCredentials) {
-        return serviceWithTransactions.
-                   fetchEventualConsistentDataEntry(orcidCredentials,
-                                                    readOrcidCredentialsService::getOrcidCredentials)
+        return serviceWithTransactions
+                   .fetchEventualConsistentDataEntry(orcidCredentials,
+                                                     readOrcidCredentialsService::getOrcidCredentials)
                    .orElse(null);
     }
 }

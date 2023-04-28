@@ -1,7 +1,6 @@
 package no.sikt.nva.orcid.commons.service;
 
 import static java.util.Objects.isNull;
-import static no.sikt.nva.orcid.commons.model.storage.DynamoEntry.parseAttributeValuesMap;
 import static no.sikt.nva.orcid.constants.OrcidConstants.ORCID_PRIMARY_PARTITION_KEY;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -11,6 +10,7 @@ import com.amazonaws.services.kms.model.NotFoundException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
+import no.sikt.nva.orcid.commons.model.storage.OrcidCredentialsDao;
 
 public class ReadOrcidCredentialsService {
 
@@ -33,7 +33,7 @@ public class ReadOrcidCredentialsService {
     protected OrcidCredentials getOrcidCredentials(OrcidCredentials orcidCredentials) {
         Map<String, AttributeValue> primaryKey = primaryKey(orcidCredentials);
         GetItemResult getResult = getResourceByPrimaryKey(primaryKey);
-        return parseAttributeValuesMap(getResult.getItem());
+        return new OrcidCredentialsDao(getResult.getItem()).getOrcidCredentials();
     }
 
     private GetItemResult getResourceByPrimaryKey(Map<String, AttributeValue> primaryKey) {

@@ -66,17 +66,17 @@ public class OrcidCredentials {
     }
 
     public OrcidCredentials copy() {
-       return builder()
-                  .withOrcid(this.getOrcid())
-                  .withAccessToken(this.getAccessToken())
-                  .withTokenType(this.getTokenType())
-                  .withExpiresIn(this.getExpiresIn())
-                  .withTokenVersion(this.getTokenVersion())
-                  .withPersistent(this.isPersistent())
-                  .withIdToken(this.getIdToken())
-                  .withTokenId(this.getTokenId())
-                  .withModified(this.getModified())
-                  .withCreated(this.getCreated())
-                  .build();
+        return builder()
+                   .withOrcid(this.getOrcid())
+                   .withAccessToken(this.getAccessToken())
+                   .withTokenType(this.getTokenType())
+                   .withExpiresIn(this.getExpiresIn())
+                   .withTokenVersion(this.getTokenVersion())
+                   .withPersistent(this.isPersistent())
+                   .withIdToken(this.getIdToken())
+                   .withTokenId(this.getTokenId())
+                   .withModified(this.getModified())
+                   .withCreated(this.getCreated())
+                   .build();
     }
 }
