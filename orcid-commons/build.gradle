@@ -2,8 +2,10 @@ apply plugin: 'io.freefair.lombok'
 
 dependencies {
     implementation project(":orcid-testutils")
+    implementation project(":orcid-constants")
 
     implementation libs.nva.core
+    implementation libs.nva.json
 
     implementation libs.aws.sdk.dynamodb
 

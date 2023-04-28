@@ -9,7 +9,6 @@ awslog4j2 = '1.5.1'
 dynamoDbLocal = { strictly = '1.21.1' }
 awsSdk = { strictly = '1.12.369' }
 jackson = { strictly = '2.14.1' }
-zalandoProblem = { strictly = '0.27.1' }
 hamcrestSpotify = { strictly = '1.2.0' }
 
 [libraries]
@@ -17,6 +16,7 @@ nva-core = { group = "com.github.bibsysdev", name = "core", version.ref = "nva" 
 nva-apigateway = { group = "com.github.bibsysdev", name = "apigateway", version.ref = "nva" }
 nva-logutils = { group = "com.github.bibsysdev", name = "logutils", version.ref = "nva" }
 nva-testutils = { group = "com.github.bibsysdev", name = "nvatestutils", version.ref = "nva" }
+nva-json = { group = 'com.github.bibsysdev', name = 'json', version.ref = 'nva' }
 
 mockito-core = { group = 'org.mockito', name = 'mockito-core', version.ref = 'mockito' }
 hamcrest-base = { group = 'org.hamcrest', name = 'hamcrest', version.ref = 'hamcrest' }
