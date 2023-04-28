@@ -98,7 +98,7 @@ components:
         expires_in:
           type: number
         tokenVersion:
-          type: number
+          type: string
         persistent:
           type: boolean
         id_token:
