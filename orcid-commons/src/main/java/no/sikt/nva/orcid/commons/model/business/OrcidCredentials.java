@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import no.unit.nva.commons.json.JsonSerializable;
 import nva.commons.core.JacocoGenerated;
 
 @Data
@@ -18,7 +19,7 @@ import nva.commons.core.JacocoGenerated;
     setterPrefix = "with"
 )
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class OrcidCredentials {
+public class OrcidCredentials implements JsonSerializable {
 
     private static final String ORCID = "orcid";
     private static final String ACCESS_TOKEN = "access_token";

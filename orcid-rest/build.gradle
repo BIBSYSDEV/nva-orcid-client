@@ -1,8 +1,12 @@
 dependencies {
-
+    implementation project(":orcid-testutils")
+    implementation project(":orcid-commons")
     implementation libs.nva.apigateway
     implementation libs.nva.core
+    implementation libs.nva.json
     implementation libs.bundles.logging
+
+    implementation libs.aws.sdk.dynamodb
 
 }
 
