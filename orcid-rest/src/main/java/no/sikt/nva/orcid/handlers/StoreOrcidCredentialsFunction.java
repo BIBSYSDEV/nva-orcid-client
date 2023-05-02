@@ -14,6 +14,8 @@ import nva.commons.apigateway.RequestInfo;
 import nva.commons.apigateway.exceptions.ApiGatewayException;
 import nva.commons.apigateway.exceptions.BadGatewayException;
 import nva.commons.apigateway.exceptions.ConflictException;
+import nva.commons.apigateway.exceptions.ForbiddenException;
+import nva.commons.apigateway.exceptions.UnauthorizedException;
 import nva.commons.core.Environment;
 import nva.commons.core.JacocoGenerated;
 import nva.commons.core.attempt.Failure;
@@ -26,25 +28,32 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
     private static final Logger logger = LoggerFactory.getLogger(StoreOrcidCredentialsFunction.class);
     private static final String ORCID_CREDENTIALS_ALREADY_EXISTS = "Orcid credentials already exists";
     private static final String TABLE_NAME = "TABLE_NAME";
+    private static final String API_HOST = "API_HOST";
     private final OrcidService orcidService;
+    private final UserOrcidResolver userOrcidResolver;
 
     @JacocoGenerated
     public StoreOrcidCredentialsFunction() {
         this(new OrcidServiceImpl(
-            new Environment().readEnv(TABLE_NAME),
-            AmazonDynamoDBClientBuilder.defaultClient(),
-            Clock.systemDefaultZone()));
+                 new Environment().readEnv(TABLE_NAME),
+                 AmazonDynamoDBClientBuilder.defaultClient(),
+                 Clock.systemDefaultZone()),
+             UserOrcidResolver.defaultUserOrcidResolver(
+                 new Environment().readEnv(API_HOST)));
     }
 
-    public StoreOrcidCredentialsFunction(OrcidService orcidService) {
+    public StoreOrcidCredentialsFunction(OrcidService orcidService, UserOrcidResolver userOrcidResolver) {
         super(OrcidCredentials.class);
         this.orcidService = orcidService;
+        this.userOrcidResolver = userOrcidResolver;
     }
 
     @Override
     protected Void processInput(OrcidCredentials input, RequestInfo requestInfo, Context context)
         throws ApiGatewayException {
         logger.info(input.getOrcid().toString());
+        logger.info(requestInfo.getUserName());
+        validateInput(input, requestInfo);
         attempt(() -> orcidService.createOrcidCredentials(input))
             .orElseThrow(this::convertToCorrectApiGatewayException);
         return null;
@@ -53,6 +62,20 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
     @Override
     protected Integer getSuccessStatusCode(OrcidCredentials input, Void output) {
         return HttpURLConnection.HTTP_CREATED;
+    }
+
+    private void validateInput(OrcidCredentials input, RequestInfo requestInfo)
+        throws ForbiddenException, BadGatewayException, UnauthorizedException {
+        var userName = requestInfo.getUserName();
+        var orcidFromCristin =
+            attempt(() -> userOrcidResolver.getOrcidForUser(userName)).orElseThrow(
+                fail -> new BadGatewayException("Could not contact cristin API"));
+        if (orcidFromCristin.isEmpty()) {
+            throw new ForbiddenException();
+        }
+        if (!input.getOrcid().toString().contains(orcidFromCristin.get())) {
+            throw new ForbiddenException();
+        }
     }
 
     private ApiGatewayException convertToCorrectApiGatewayException(Failure<OrcidCredentials> fail) {

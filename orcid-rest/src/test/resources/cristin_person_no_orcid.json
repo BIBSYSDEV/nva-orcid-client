@@ -1,0 +1,96 @@
+{
+  "@context": "https://example.org/person-context.json",
+  "id": "https://api.dev.nva.aws.unit.no/cristin/person/738",
+  "type": "Person",
+  "identifiers": [
+    {
+      "type": "CristinIdentifier",
+      "value": "123"
+    }
+  ],
+  "names": [
+    {
+      "type": "LastName",
+      "value": "John"
+    },
+    {
+      "type": "FirstName",
+      "value": "Doe"
+    }
+  ],
+  "image": "https://api.cristin-test.uio.no/v2/persons/123/picture",
+  "affiliations": [
+    {
+      "type": "Affiliation",
+      "organization": "https://api.dev.nva.aws.unit.no/cristin/organization/185.39.55.20",
+      "active": false,
+      "role": {
+        "type": "Role",
+        "labels": {
+          "en": "Guest",
+          "nb": "Gjest"
+        }
+      }
+    },
+    {
+      "type": "Affiliation",
+      "organization": "https://api.dev.nva.aws.unit.no/cristin/organization/185.39.59.10",
+      "active": false,
+      "role": {
+        "type": "Role",
+        "labels": {
+          "en": "Guest",
+          "nb": "Gjest"
+        }
+      }
+    },
+    {
+      "type": "Affiliation",
+      "organization": "https://api.dev.nva.aws.unit.no/cristin/organization/20202.0.0.0",
+      "active": true,
+      "role": {
+        "type": "Role",
+        "labels": {
+          "en": "Guest",
+          "nb": "Gjest"
+        }
+      }
+    },
+    {
+      "type": "Affiliation",
+      "organization": "https://api.dev.nva.aws.unit.no/cristin/organization/20754.0.0.0",
+      "active": true,
+      "role": {
+        "type": "Role",
+        "labels": {
+          "en": "Guest",
+          "nb": "Gjest"
+        }
+      }
+    },
+    {
+      "type": "Affiliation",
+      "organization": "https://api.dev.nva.aws.unit.no/cristin/organization/20754.0.0.0",
+      "active": false,
+      "role": {
+        "type": "Role",
+        "labels": {
+          "en": "Guest",
+          "nb": "Gjest"
+        }
+      }
+    },
+    {
+      "type": "Affiliation",
+      "organization": "https://api.dev.nva.aws.unit.no/cristin/organization/20754.0.0.0",
+      "active": false,
+      "role": {
+        "type": "Role",
+        "labels": {
+          "en": "Guest",
+          "nb": "Gjest"
+        }
+      }
+    }
+  ]
+}

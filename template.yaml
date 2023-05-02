@@ -119,6 +119,7 @@ Resources:
         Variables:
           ALLOWED_ORIGIN: '*'
           TABLE_NAME: !Ref NvaOrcidTable
+          API_HOST: !Ref ApiDomain
       Events:
         postOrcidCredentials:
           Type: Api
