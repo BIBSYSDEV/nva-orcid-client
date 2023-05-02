@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class StoreOrcidCredentialsFunctionTest {
+
     private static final Context CONTEXT = mock(Context.class);
 
     private StoreOrcidCredentialsFunction handler;
@@ -18,14 +19,11 @@ public class StoreOrcidCredentialsFunctionTest {
     public void init() {
         handler = new StoreOrcidCredentialsFunction();
         outputStream = new ByteArrayOutputStream();
-
     }
 
     @Test
     public void dummyTest() throws IOException {
         var inputStream = new ByteArrayInputStream("{\"message\": \"hello world\"}".getBytes());
         handler.handleRequest(inputStream, outputStream, CONTEXT);
-        var something = "hehe";
     }
-
 }
