@@ -25,7 +25,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.file.Path;
 import java.time.Clock;
-import java.util.Map;
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.sikt.nva.orcid.commons.service.OrcidService;
 import no.sikt.nva.orcid.commons.service.OrcidServiceImpl;
@@ -51,7 +50,6 @@ public class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
     private StoreOrcidCredentialsFunction handler;
     private ByteArrayOutputStream outputStream;
     private OrcidService orcidService;
-    private Clock clock;
     private UserOrcidResolver userOrcidResolver;
 
 
@@ -59,8 +57,7 @@ public class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
     public void init(WireMockRuntimeInfo wireMockRuntimeInfo) {
         super.init(ORCID_TABLE_NAME);
         stubForPersonResponse();
-        this.clock = Clock.systemDefaultZone();
-        this.orcidService = new OrcidServiceImpl(ORCID_TABLE_NAME, client, clock);
+        this.orcidService = new OrcidServiceImpl(ORCID_TABLE_NAME, client, Clock.systemDefaultZone());
         this.userOrcidResolver = new UserOrcidResolver(WiremockHttpClient.create(),
                                                        wireMockRuntimeInfo.getHttpsBaseUrl().replace(
                                                            "https://", ""));
