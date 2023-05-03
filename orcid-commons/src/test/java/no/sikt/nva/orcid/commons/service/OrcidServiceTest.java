@@ -61,7 +61,7 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
     }
 
     @Test
-    public void shouldThrowExceptionIfDynamoIsWorking() {
+    public void shouldThrowExceptionIfDynamoIsNotWorking() {
         client = mock(AmazonDynamoDB.class);
         doThrow(RuntimeException.class).when(client).transactWriteItems(any());
         orcidService = new OrcidServiceImpl(ORCID_TABLE_NAME, client, clock);
