@@ -20,6 +20,13 @@ Parameters:
     Type: 'AWS::SSM::Parameter::Value<String>'
     Description: The Api domain
     Default: /NVA/ApiDomain
+  Suffix:
+    Type: String
+    Default: ''
+    Description: Suffix used for naming resources for feature branches to avoid conflicts.
+
+Conditions:
+  WithSuffix: !Not [ !Equals [ !Ref Suffix, '' ] ]
 
 Globals:
   Function:
