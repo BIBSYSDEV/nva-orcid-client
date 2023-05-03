@@ -36,6 +36,9 @@ Globals:
 
 Resources:
 
+  ApiAccessLogGroup:
+    Type: AWS::Logs::LogGroup
+
   #==============================ROLES==============================================================
   LambdaRole:
     Type: AWS::IAM::Role
