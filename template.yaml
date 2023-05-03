@@ -123,7 +123,7 @@ Resources:
         postOrcidCredentials:
           Type: Api
           Properties:
-            RestApiId: !Ref OrcidGatewayAPI
+            RestApiId: !Ref NvaOrcidClientApi
             Method: post
             Path: /
 
