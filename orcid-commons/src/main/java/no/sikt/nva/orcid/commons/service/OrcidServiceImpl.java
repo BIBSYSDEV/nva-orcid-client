@@ -3,7 +3,6 @@ package no.sikt.nva.orcid.commons.service;
 import static no.sikt.nva.orcid.commons.service.ServiceWithTransactions.newTransactWriteItemsRequest;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.TransactWriteItem;
-import com.amazonaws.services.dynamodbv2.model.TransactWriteItemsRequest;
 import java.net.URI;
 import java.time.Clock;
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
@@ -37,8 +36,8 @@ public class OrcidServiceImpl implements OrcidService {
     }
 
     private OrcidCredentials insertOrcidCredentials(OrcidCredentials orcidCredentials) {
-        TransactWriteItem transactionItem = transactionItemsForOrcidCredentialsInsertion(orcidCredentials);
-        TransactWriteItemsRequest putRequest = newTransactWriteItemsRequest(transactionItem);
+        var transactionItem = transactionItemsForOrcidCredentialsInsertion(orcidCredentials);
+        var putRequest = newTransactWriteItemsRequest(transactionItem);
         serviceWithTransactions.sendTransactionWriteRequest(putRequest);
         return fetchSavedOrcidCredentials(orcidCredentials);
     }

@@ -16,7 +16,6 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.GetItemResult;
 import com.amazonaws.services.kms.model.NotFoundException;
-import java.net.URI;
 import java.time.Clock;
 import java.util.Map;
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
@@ -77,7 +76,7 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
 
     @Test
     public void shouldThrowExceptionWhenOrcidIsNull() {
-        URI orcid = UriWrapper.fromUri("").getUri();
+        var orcid = UriWrapper.fromUri("").getUri();
         assertThrows(AmazonServiceException.class, () -> orcidService.fetchOrcidCredentialsByOrcid(orcid));
     }
 

@@ -25,13 +25,13 @@ public class OrcidCredentialsDao {
     }
 
     public Map<String, AttributeValue> toDynamoFormat() {
-        Item item = attempt(() -> Item.fromJSON(
+        var item = attempt(() -> Item.fromJSON(
             JsonUtils.dynamoObjectMapper.writeValueAsString(this.getOrcidCredentials()))).orElseThrow();
         return ItemUtils.toAttributeValues(item);
     }
 
     private static OrcidCredentials fromDynamoFormat(Map<String, AttributeValue> valuesMap) {
-        Item item = ItemUtils.toItem(valuesMap);
+        var item = ItemUtils.toItem(valuesMap);
         return attempt(() -> JsonUtils.dynamoObjectMapper
                                  .readValue(item.toJSON(), OrcidCredentials.class))
                    .orElseThrow();

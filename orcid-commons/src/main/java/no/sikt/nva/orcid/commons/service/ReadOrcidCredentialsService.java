@@ -25,19 +25,19 @@ public class ReadOrcidCredentialsService {
 
     public Map<String, AttributeValue> primaryKey(OrcidCredentials orcidCredentials) {
         final Map<String, AttributeValue> map = new ConcurrentHashMap<>();
-        AttributeValue partKeyValue = new AttributeValue(orcidCredentials.getOrcid().toString());
+        var partKeyValue = new AttributeValue(orcidCredentials.getOrcid().toString());
         map.put(ORCID_PRIMARY_PARTITION_KEY, partKeyValue);
         return map;
     }
 
     protected OrcidCredentials getOrcidCredentials(OrcidCredentials orcidCredentials) {
-        Map<String, AttributeValue> primaryKey = primaryKey(orcidCredentials);
-        GetItemResult getResult = getResourceByPrimaryKey(primaryKey);
+        var primaryKey = primaryKey(orcidCredentials);
+        var getResult = getResourceByPrimaryKey(primaryKey);
         return new OrcidCredentialsDao(getResult.getItem()).getOrcidCredentials();
     }
 
     private GetItemResult getResourceByPrimaryKey(Map<String, AttributeValue> primaryKey) {
-        GetItemResult result = client.getItem(new GetItemRequest()
+        var result = client.getItem(new GetItemRequest()
                                                   .withTableName(orcidTableName)
                                                   .withKey(primaryKey));
         if (isNull(result.getItem())) {
