@@ -21,12 +21,12 @@ import nva.commons.core.JacocoGenerated;
 public class OrcidCredentials {
 
     private static final String ORCID = "orcid";
-    private static final String ACCESS_TOKEN = "access_token";
-    private static final String TOKEN_TYPE = "token_type";
-    private static final String EXPIRES_IN = "expires_in";
+    private static final String ACCESS_TOKEN = "accessToken";
+    private static final String TOKEN_TYPE = "tokenType";
+    private static final String EXPIRES_IN = "expiresIn";
     private static final String TOKEN_VERSION = "tokenVersion";
     private static final String PERSISTENT = "persistent";
-    private static final String ID_TOKEN = "id_token";
+    private static final String ID_TOKEN = "idToken";
     private static final String TOKEN_ID = "tokenId";
     private static final String MODIFIED = "modified";
     private static final String CREATED = "created";
