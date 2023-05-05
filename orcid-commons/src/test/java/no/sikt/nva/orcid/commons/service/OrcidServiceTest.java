@@ -1,11 +1,11 @@
 package no.sikt.nva.orcid.commons.service;
 
 import static no.sikt.nva.orcid.commons.utils.RandomOrcidCredentialsGenerator.randomOrcidCredentials;
+import static no.unit.nva.hamcrest.DoesNotHaveEmptyValues.doesNotHaveEmptyValues;
 import static no.unit.nva.testutils.RandomDataGenerator.randomUri;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -34,33 +34,30 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
     private Clock clock;
 
     @BeforeEach
-    public void initialize() {
+    void initialize() {
         super.init(ORCID_TABLE_NAME);
         this.clock = Clock.systemDefaultZone();
         this.orcidService = new OrcidServiceImpl(ORCID_TABLE_NAME, client, clock);
     }
 
     @Test
-    public void shouldBePossibleToStoreOrcidCredentials() {
+    void shouldBePossibleToStoreOrcidCredentials() {
         var orcidCredentials = randomOrcidCredentials();
-        var persistedOrcidCredentials = orcidService.createOrcidCredentials(orcidCredentials.copy());
-        assertThat(persistedOrcidCredentials.getModified(), is(notNullValue()));
-        assertThat(persistedOrcidCredentials.getCreated(), is(notNullValue()));
-        assertThat(persistedOrcidCredentials.getCreated(), is(equalTo(persistedOrcidCredentials.getModified())));
-        persistedOrcidCredentials.setCreated(null);
-        persistedOrcidCredentials.setModified(null);
-        assertThat(persistedOrcidCredentials, is(equalTo(orcidCredentials)));
+        var actual = orcidService.createOrcidCredentials(orcidCredentials.copy());
+        assertThat(actual.getModified(), doesNotHaveEmptyValues());
+        assertThat(actual.getCreated(), is(equalTo(actual.getModified())));
+        assertThat(actual.hasSameCredentials(orcidCredentials), is(true));
     }
 
     @Test
-    public void shouldThrowExceptionIfCredentialsAlreadyExists() {
+    void shouldThrowExceptionIfCredentialsAlreadyExists() {
         var orcidCredentials = randomOrcidCredentials();
         orcidService.createOrcidCredentials(orcidCredentials.copy());
         assertThrows(TransactionFailedException.class, () -> orcidService.createOrcidCredentials(orcidCredentials));
     }
 
     @Test
-    public void shouldThrowExceptionIfDynamoIsNotWorking() {
+    void shouldThrowExceptionIfDynamoIsNotWorking() {
         client = mock(AmazonDynamoDB.class);
         doThrow(RuntimeException.class).when(client).transactWriteItems(any());
         orcidService = new OrcidServiceImpl(ORCID_TABLE_NAME, client, clock);
@@ -69,26 +66,26 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
     }
 
     @Test
-    public void shouldThrowNotFoundExceptionWhenTryingToFetchNonExistingOrcidCredentials() {
+    void shouldThrowNotFoundExceptionWhenTryingToFetchNonExistingOrcidCredentials() {
         var orcid = randomUri();
         assertThrows(NotFoundException.class, () -> orcidService.fetchOrcidCredentialsByOrcid(orcid));
     }
 
     @Test
-    public void shouldThrowExceptionWhenOrcidIsNull() {
+    void shouldThrowExceptionWhenOrcidIsNull() {
         var orcid = UriWrapper.fromUri("").getUri();
         assertThrows(AmazonServiceException.class, () -> orcidService.fetchOrcidCredentialsByOrcid(orcid));
     }
 
     @Test
-    public void shouldBePossibleToRetrieveOrcidCredentials() {
+    void shouldBePossibleToRetrieveOrcidCredentials() {
         var persistedCredentials = orcidService.createOrcidCredentials(randomOrcidCredentials().copy());
         var retrievedCredentials = orcidService.fetchOrcidCredentialsByOrcid(persistedCredentials.getOrcid());
-        assertThat(retrievedCredentials, is(equalTo(retrievedCredentials)));
+        assertThat(retrievedCredentials, is(equalTo(persistedCredentials)));
     }
 
     @Test
-    public void shouldNotGiveUpOnFirstTryToSaveCredentials() {
+    void shouldNotGiveUpOnFirstTryToSaveCredentials() {
         var orcidCredentials = randomOrcidCredentials();
         var itemResult = generateItemResult(orcidCredentials);
         client = mock(AmazonDynamoDB.class);

@@ -3,6 +3,7 @@ package no.sikt.nva.orcid.commons.model.business;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.net.URI;
 import java.time.Instant;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -78,5 +79,39 @@ public class OrcidCredentials {
                    .withModified(this.getModified())
                    .withCreated(this.getCreated())
                    .build();
+    }
+
+    @Override
+    @JacocoGenerated
+    public int hashCode() {
+        return Objects.hash(getOrcid(), getAccessToken(), getTokenType(), getExpiresIn(), getTokenVersion(),
+                            isPersistent(),
+                            getIdToken(), getTokenId(), getModified(), getCreated());
+    }
+
+    @Override
+    @JacocoGenerated
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof OrcidCredentials)) {
+            return false;
+        }
+        OrcidCredentials that = (OrcidCredentials) o;
+        return hasSameCredentials(that)
+               && Objects.equals(getModified(), that.getModified())
+               && Objects.equals(getCreated(), that.getCreated());
+    }
+
+    public boolean hasSameCredentials(OrcidCredentials credentials) {
+        return getExpiresIn() == credentials.getExpiresIn()
+               && isPersistent() == credentials.isPersistent()
+               && getTokenId() == credentials.getTokenId()
+               && Objects.equals(getOrcid(), credentials.getOrcid())
+               && Objects.equals(getAccessToken(), credentials.getAccessToken())
+               && Objects.equals(getTokenType(), credentials.getTokenType())
+               && Objects.equals(getTokenVersion(), credentials.getTokenVersion())
+               && Objects.equals(getIdToken(), credentials.getIdToken());
     }
 }

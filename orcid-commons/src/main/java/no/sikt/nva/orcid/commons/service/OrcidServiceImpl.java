@@ -51,6 +51,6 @@ public class OrcidServiceImpl implements OrcidService {
         return serviceWithTransactions
                    .fetchEventualConsistentDataEntry(orcidCredentials,
                                                      readOrcidCredentialsService::getOrcidCredentials)
-                   .orElse(null);
+                   .orElseThrow();
     }
 }
