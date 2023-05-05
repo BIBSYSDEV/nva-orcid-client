@@ -5,7 +5,6 @@ import static no.sikt.nva.orcid.constants.OrcidConstants.ORCID_PRIMARY_PARTITION
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
-import com.amazonaws.services.dynamodbv2.model.GetItemResult;
 import com.amazonaws.services.kms.model.NotFoundException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,24 +24,24 @@ public class ReadOrcidCredentialsService {
 
     public Map<String, AttributeValue> primaryKey(OrcidCredentials orcidCredentials) {
         final Map<String, AttributeValue> map = new ConcurrentHashMap<>();
-        AttributeValue partKeyValue = new AttributeValue(orcidCredentials.getOrcid().toString());
+        var partKeyValue = new AttributeValue(orcidCredentials.getOrcid().toString());
         map.put(ORCID_PRIMARY_PARTITION_KEY, partKeyValue);
         return map;
     }
 
     protected OrcidCredentials getOrcidCredentials(OrcidCredentials orcidCredentials) {
-        Map<String, AttributeValue> primaryKey = primaryKey(orcidCredentials);
-        GetItemResult getResult = getResourceByPrimaryKey(primaryKey);
-        return new OrcidCredentialsDao(getResult.getItem()).getOrcidCredentials();
+        var primaryKey = primaryKey(orcidCredentials);
+        var item = getResourceByPrimaryKey(primaryKey);
+        return new OrcidCredentialsDao(item).getOrcidCredentials();
     }
 
-    private GetItemResult getResourceByPrimaryKey(Map<String, AttributeValue> primaryKey) {
-        GetItemResult result = client.getItem(new GetItemRequest()
+    private Map<String, AttributeValue> getResourceByPrimaryKey(Map<String, AttributeValue> primaryKey) {
+        var result = client.getItem(new GetItemRequest()
                                                   .withTableName(orcidTableName)
                                                   .withKey(primaryKey));
         if (isNull(result.getItem())) {
             throw new NotFoundException(RESOURCE_NOT_FOUND_MESSAGE);
         }
-        return result;
+        return result.getItem();
     }
 }
