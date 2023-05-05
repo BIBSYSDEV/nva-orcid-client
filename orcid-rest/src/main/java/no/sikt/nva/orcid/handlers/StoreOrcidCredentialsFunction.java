@@ -52,7 +52,6 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
     protected Void processInput(OrcidCredentials input, RequestInfo requestInfo, Context context)
         throws ApiGatewayException {
         logger.info(input.getOrcid().toString());
-        logger.info(requestInfo.getUserName());
         validateInput(input, requestInfo);
         attempt(() -> orcidService.createOrcidCredentials(input))
             .orElseThrow(this::convertToCorrectApiGatewayException);

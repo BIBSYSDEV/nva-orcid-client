@@ -90,7 +90,7 @@ public class UserOrcidResolver {
         HttpResponse<String> response;
         do {
             if (numberOfAttempts != 0) {
-                Thread.sleep(500);
+                Thread.sleep(200);
             }
             response = httpClient.send(httpRequest, BodyHandlers.ofString());
             statusCode = response.statusCode();
