@@ -4,6 +4,7 @@ import static no.sikt.nva.orcid.commons.utils.RandomOrcidCredentialsGenerator.ra
 import static no.unit.nva.hamcrest.DoesNotHaveEmptyValues.doesNotHaveEmptyValues;
 import static no.unit.nva.testutils.RandomDataGenerator.randomUri;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -96,6 +97,18 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
 
         var persistedCredentials = orcidService.createOrcidCredentials(orcidCredentials.copy());
         assertThat(persistedCredentials, is(equalTo(orcidCredentials)));
+    }
+
+    @Test
+    void shouldThrowExceptionIfOrcidCredentialsCannotBeFoundAfterSave() {
+        client = mock(AmazonDynamoDB.class);
+        when(client.getItem(any()))
+            .thenThrow(RuntimeException.class);
+        orcidService = new OrcidServiceImpl(ORCID_TABLE_NAME, client, clock);
+        var orcidCredentials = randomOrcidCredentials();
+        var exception = assertThrows(TransactionFailedException.class,
+                                     () -> orcidService.createOrcidCredentials(orcidCredentials.copy()));
+        assertThat(exception.getMessage(), containsString("Error reading result"));
     }
 
     private GetItemResult generateItemResult(OrcidCredentials orcidCredentials) {
