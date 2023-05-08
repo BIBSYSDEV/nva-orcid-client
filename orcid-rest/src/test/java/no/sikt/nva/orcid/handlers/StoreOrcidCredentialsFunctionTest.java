@@ -52,9 +52,8 @@ public class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
     private OrcidService orcidService;
     private UserOrcidResolver userOrcidResolver;
 
-
     @BeforeEach
-    public void init(WireMockRuntimeInfo wireMockRuntimeInfo) {
+    void init(WireMockRuntimeInfo wireMockRuntimeInfo) {
         super.init(ORCID_TABLE_NAME);
         stubForPersonResponse();
         this.orcidService = new OrcidServiceImpl(ORCID_TABLE_NAME, client, Clock.systemDefaultZone());
@@ -66,7 +65,7 @@ public class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
     }
 
     @Test
-    public void shouldStoreOrcidCredentials() throws IOException {
+    void shouldStoreOrcidCredentials() throws IOException {
 
         var orcidCredentials = generateOrcidCredentials(orcidForTestUser);
         try (var inputStream = createOrcidCredentialsRequestFromString(orcidCredentials, testUserName)) {
@@ -87,7 +86,7 @@ public class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
     }
 
     @Test
-    public void shouldReturnBadGatewayWhenOrcidServiceIsUnreachable() throws IOException {
+    void shouldReturnBadGatewayWhenOrcidServiceIsUnreachable() throws IOException {
         var orcidCredentials = generateOrcidCredentials(orcidForTestUser);
         var fakeOrcidServiceThrowingException = new FakeOrcidServiceImplThrowingException();
         handler = new StoreOrcidCredentialsFunction(fakeOrcidServiceThrowingException, userOrcidResolver);
@@ -100,7 +99,7 @@ public class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
     }
 
     @Test
-    public void shouldReturnConflictIfOrcidCredentialsAlreadyExists() throws IOException {
+    void shouldReturnConflictIfOrcidCredentialsAlreadyExists() throws IOException {
         var orcidCredentials = generateOrcidCredentials(orcidForTestUser);
         orcidService.createOrcidCredentials(orcidCredentials);
         try (var inputStream = createOrcidCredentialsRequestFromString(orcidCredentials, testUserName)) {
@@ -112,7 +111,7 @@ public class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
     }
 
     @Test
-    public void shouldReturnForbiddenWhenUserDoesNotHaveTheOrcidTheyAreTryingToSubmit() throws IOException {
+    void shouldReturnForbiddenWhenUserDoesNotHaveTheOrcidTheyAreTryingToSubmit() throws IOException {
         var orcidCredentials = generateOrcidCredentials(UriWrapper.fromUri("https://sandbox.orcid"
                                                                            + ".org/0000-0001-3121-1234").getUri());
         try (var inputStream = createOrcidCredentialsRequestFromString(orcidCredentials, testUserName)) {
@@ -124,7 +123,7 @@ public class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
     }
 
     @Test
-    public void shouldReturnForbiddenWhenUserDoesNotHaveOrcid() throws IOException {
+    void shouldReturnForbiddenWhenUserDoesNotHaveOrcid() throws IOException {
         var orcidCredentials = generateOrcidCredentials(orcidForTestUser);
         var userWithoutOrcid = "someuser@185.39.55.0";
         stubPersonResponseWithouthOrcid("someuser");
@@ -137,7 +136,7 @@ public class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
     }
 
     @Test
-    public void shouldReturnBadGatewayIfCristinApiIsUnavailable() throws IOException {
+    void shouldReturnBadGatewayIfCristinApiIsUnavailable() throws IOException {
         var orcidCredentials = generateOrcidCredentials(orcidForTestUser);
         var user = "someuser@185.39.55.0";
         stubInternalServerResponse("someuser");

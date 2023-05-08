@@ -51,7 +51,7 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
     @Override
     protected Void processInput(OrcidCredentials input, RequestInfo requestInfo, Context context)
         throws ApiGatewayException {
-        logger.info(input.getOrcid().toString());
+        logger.info("Attempting to store orcid: " + input.getOrcid().toString());
         validateInput(input, requestInfo);
         attempt(() -> orcidService.createOrcidCredentials(input))
             .orElseThrow(this::convertToCorrectApiGatewayException);
@@ -67,7 +67,7 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
         throws ForbiddenException, BadGatewayException, UnauthorizedException {
         var userName = requestInfo.getUserName();
         var orcidFromCristin =
-            attempt(() -> userOrcidResolver.getOrcidForUser(userName)).orElseThrow(
+            attempt(() -> userOrcidResolver.extractOrcidForUser(userName)).orElseThrow(
                 fail -> new BadGatewayException("Could not contact cristin API"));
         if (orcidFromCristin.isEmpty()) {
             throw new ForbiddenException();
