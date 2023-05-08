@@ -80,28 +80,28 @@ components:
       type: object
       required:
         - orcid
-        - access_token
-        - token_type
-        - expires_in
+        - accessToken
+        - tokenType
+        - expiresIn
         - tokenVersion
         - persistent
-        - id_token
+        - idToken
         - tokenId
       properties:
         orcid:
           description: Full url of orcid
           type: string
-        access_token:
+        accessToken:
           type: string
-        token_type:
+        tokenType:
           type: string
-        expires_in:
+        expiresIn:
           type: number
         tokenVersion:
           type: number
         persistent:
           type: boolean
-        id_token:
+        idToken:
           type: string
         tokenId:
           type: number
