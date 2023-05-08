@@ -2,7 +2,9 @@ package no.sikt.nva.orcid.handlers;
 
 import static nva.commons.core.attempt.Try.attempt;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.io.IOException;
+import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryRegistry;
+import io.vavr.control.Try;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -11,6 +13,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Optional;
+import java.util.function.Supplier;
 import no.sikt.nva.orcid.model.CristinPersonApiClientException;
 import no.sikt.nva.orcid.model.CristinPersonResponse;
 import no.unit.nva.commons.json.JsonUtils;
@@ -25,7 +28,6 @@ public class UserOrcidResolver {
     public static final String HTTPS_SCHEME = "https";
     private static final String ACCEPT = "Accept";
     private static final String APPLICATION_JSON = "application/json";
-    private static final int MAX_TRIES = 3;
     private static final String CRISTIN_PERSON_PATH = "/cristin/person/";
 
     private final HttpClient httpClient;
@@ -62,19 +64,11 @@ public class UserOrcidResolver {
             new URIBuilder().setHost(apiHost).setPath(constructPersonPath(userName)).setScheme(HTTPS_SCHEME).build();
     }
 
-    private String extractBodyFromResponse(HttpResponse<String> response) {
-        if (response.statusCode() != HttpURLConnection.HTTP_OK) {
-            throw new CristinPersonApiClientException(CRISTIN_API_ERROR_MESSAGE + response.statusCode());
-        }
-        return response.body();
-    }
-
     private RuntimeException handleFailure(Failure<Optional<String>> fail) {
         return new CristinPersonApiClientException(fail.getException());
     }
 
-    private Optional<String> extractOrcidFromResponse(HttpResponse<String> response) throws JsonProcessingException {
-        var responseBody = extractBodyFromResponse(response);
+    private Optional<String> extractOrcidFromResponse(String responseBody) throws JsonProcessingException {
         return extractOrcidIdentifierFromResponseBody(responseBody);
     }
 
@@ -84,25 +78,33 @@ public class UserOrcidResolver {
         return cristinPersonResponse.getOrcid();
     }
 
-    private HttpResponse<String> extractCristinPersonResponse(HttpRequest httpRequest)
-        throws IOException, InterruptedException {
+    private String extractCristinPersonResponse(HttpRequest httpRequest) {
         return extractCristinResponseWithRetries(httpRequest);
     }
 
-    private HttpResponse<String> extractCristinResponseWithRetries(HttpRequest httpRequest)
-        throws IOException, InterruptedException {
-        var numberOfAttempts = 0;
-        int statusCode;
-        HttpResponse<String> response;
-        do {
-            if (numberOfAttempts != 0) {
-                Thread.sleep(200);
-            }
-            response = httpClient.send(httpRequest, BodyHandlers.ofString());
-            statusCode = response.statusCode();
-            numberOfAttempts++;
-        } while (numberOfAttempts < MAX_TRIES && statusCode >= HttpURLConnection.HTTP_INTERNAL_ERROR);
-        return response;
+    private String extractCristinResponseWithRetries(HttpRequest httpRequest) {
+        var retryRegistry = RetryRegistry.ofDefaults();
+        var retry = retryRegistry.retry("get cristin person");
+        Supplier<String> supplier = () -> sendGetCristinPersonRequest(httpRequest);
+        return Try.ofSupplier(Retry.decorateSupplier(retry, supplier)).get();
+    }
+
+    private String sendGetCristinPersonRequest(HttpRequest httpRequest) {
+        return attempt(() -> httpClient.send(httpRequest, BodyHandlers.ofString()))
+                   .map(this::extractResponseBody)
+                   .orElseThrow(
+                       this::handleCristinApiFail);
+    }
+
+    private RuntimeException handleCristinApiFail(Failure<String> fail) {
+        return new CristinPersonApiClientException(fail.getException());
+    }
+
+    private String extractResponseBody(HttpResponse<String> response) {
+        if (response.statusCode() != HttpURLConnection.HTTP_OK) {
+            throw new CristinPersonApiClientException(CRISTIN_API_ERROR_MESSAGE + response.statusCode());
+        }
+        return response.body();
     }
 
     private HttpRequest createRequest(URI userUri) {

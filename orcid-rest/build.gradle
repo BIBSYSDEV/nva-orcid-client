@@ -7,6 +7,9 @@ dependencies {
     implementation libs.nva.json
     implementation libs.bundles.logging
 
+    implementation libs.resilience4j.retry
+    implementation libs.vavr
+
     implementation libs.aws.sdk.dynamodb
 
 }
