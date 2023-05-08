@@ -11,7 +11,6 @@ import static no.unit.nva.testutils.RandomDataGenerator.randomUri;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.mock;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -39,7 +38,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 @WireMockTest(httpsEnabled = true)
-public class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
+class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
 
     private static final Context CONTEXT = mock(Context.class);
     private static final String ORCID_TABLE_NAME = "someOrcidTable";
@@ -75,14 +74,7 @@ public class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
         assertThat(response.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_CREATED)));
 
         var persistedOrcidCredentials = orcidService.fetchOrcidCredentialsByOrcid(orcidCredentials.getOrcid());
-        assertThat(persistedOrcidCredentials.getModified(), is(notNullValue()));
-        assertThat(persistedOrcidCredentials.getCreated(), is(notNullValue()));
-        assertThat(persistedOrcidCredentials.getCreated(), is(equalTo(persistedOrcidCredentials.getModified())));
-
-        persistedOrcidCredentials.setCreated(null);
-        persistedOrcidCredentials.setModified(null);
-
-        assertThat(persistedOrcidCredentials, is(equalTo(orcidCredentials)));
+        assertThat(persistedOrcidCredentials.hasSameCredentials(orcidCredentials), is(true));
     }
 
     @Test
