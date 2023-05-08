@@ -9,4 +9,8 @@ public class TransactionFailedException extends RuntimeException {
     public TransactionFailedException(Exception exception) {
         super(ERROR_MESSAGE, exception);
     }
+
+    public TransactionFailedException(Throwable throwable, String message) {
+        super(message, throwable);
+    }
 }

@@ -12,6 +12,8 @@ jackson = { strictly = '2.14.1' }
 hamcrestSpotify = { strictly = '1.2.0' }
 wiremock = { strictly = "2.35.0" }
 guava = { strictly = '31.1-jre' }
+resilience4jRetry = '2.0.2'
+vavrVersion = '0.10.2'
 
 [libraries]
 nva-core = { group = "com.github.bibsysdev", name = "core", version.ref = "nva" }
@@ -19,6 +21,9 @@ nva-apigateway = { group = "com.github.bibsysdev", name = "apigateway", version.
 nva-logutils = { group = "com.github.bibsysdev", name = "logutils", version.ref = "nva" }
 nva-testutils = { group = "com.github.bibsysdev", name = "nvatestutils", version.ref = "nva" }
 nva-json = { group = 'com.github.bibsysdev', name = 'json', version.ref = 'nva' }
+
+resilience4j-retry = { group = 'io.github.resilience4j', name = 'resilience4j-retry', version.ref = 'resilience4jRetry' }
+vavr = { group = 'io.vavr', name = 'vavr', version.ref = 'vavrVersion' }
 
 mockito-core = { group = 'org.mockito', name = 'mockito-core', version.ref = 'mockito' }
 hamcrest-base = { group = 'org.hamcrest', name = 'hamcrest', version.ref = 'hamcrest' }

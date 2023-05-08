@@ -10,12 +10,9 @@ import com.amazonaws.services.dynamodbv2.model.TransactWriteItemsResult;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.sikt.nva.orcid.commons.model.exceptions.TransactionFailedException;
 import no.sikt.nva.orcid.commons.model.storage.OrcidCredentialsDao;
 import nva.commons.core.attempt.Failure;
-import nva.commons.core.attempt.FunctionWithException;
 
 public class ServiceWithTransactions {
 
@@ -23,8 +20,6 @@ public class ServiceWithTransactions {
     public static final String KEY_NOT_EXISTS_CONDITION = keyNotExistsCondition();
     public static final Map<String, String> PRIMARY_KEY_EQUALITY_CONDITION_ATTRIBUTE_NAMES =
         primaryKeyEqualityConditionAttributeNames();
-    public static final int AWAIT_TIME_BEFORE_FETCH_RETRY = 50;
-    private static final Integer MAX_FETCH_ATTEMPTS = 3;
     private final AmazonDynamoDB client;
     private final String tableName;
 
@@ -59,17 +54,6 @@ public class ServiceWithTransactions {
         return new TransactWriteItem().withPut(put);
     }
 
-    protected <T extends OrcidCredentials, E extends Exception> Optional<T> fetchEventualConsistentDataEntry(
-        T dynamoEntry,
-        FunctionWithException<T, T, E> nonEventuallyConsistentFetch) {
-        T savedEntry = null;
-        for (int times = 0; times < MAX_FETCH_ATTEMPTS && savedEntry == null; times++) {
-            savedEntry = attempt(() -> nonEventuallyConsistentFetch.apply(dynamoEntry)).orElse(fail -> null);
-            attempt(this::waitBeforeFetching).orElseThrow();
-        }
-        return Optional.ofNullable(savedEntry);
-    }
-
     private static String keyNotExistsCondition() {
         return String.format("attribute_not_exists(%s)",
                              PARTITION_KEY_NAME_PLACEHOLDER);
@@ -83,10 +67,5 @@ public class ServiceWithTransactions {
 
     private TransactionFailedException handleTransactionFailure(Failure<TransactWriteItemsResult> fail) {
         return new TransactionFailedException(fail.getException());
-    }
-
-    private Void waitBeforeFetching() throws InterruptedException {
-        Thread.sleep(AWAIT_TIME_BEFORE_FETCH_RETRY);
-        return null;
     }
 }
