@@ -127,7 +127,7 @@ Resources:
       CodeUri: orcid-rest
       Handler: no.sikt.nva.orcid.handlers.StoreOrcidCredentialsFunction::handleRequest
       Role: !GetAtt LambdaRole.Arn
-      Runtime: java11
+      Runtime: java17
       MemorySize: 1798
       Environment:
         Variables:
