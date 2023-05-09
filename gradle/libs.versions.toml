@@ -10,6 +10,8 @@ dynamoDbLocal = { strictly = '1.21.1' }
 awsSdk = { strictly = '1.12.369' }
 jackson = { strictly = '2.14.1' }
 hamcrestSpotify = { strictly = '1.2.0' }
+wiremock = { strictly = "2.35.0" }
+guava = { strictly = '31.1-jre' }
 resilience4jRetry = '2.0.2'
 vavrVersion = '0.10.2'
 
@@ -32,6 +34,10 @@ junit-jupiter-params = { group = 'org.junit.jupiter', name = 'junit-jupiter-para
 junit-jupiter-api = { group = 'org.junit.jupiter', name = 'junit-jupiter-api', version.ref = 'junit' }
 junit-vintage-engine = { group = 'org.junit.vintage', name = 'junit-vintage-engine', version.ref = 'junit' }
 junit-jupiter-engine = { group = 'org.junit.jupiter', name = 'junit-jupiter-engine', version.ref = 'junit' }
+guava = { group = 'com.google.guava', name = 'guava', version.ref = 'guava' }
+
+
+wiremock = { group = "com.github.tomakehurst", name = "wiremock-jre8", version.ref = "wiremock" }
 
 jackson-core = { group = 'com.fasterxml.jackson.core', name = 'jackson-core', version.ref = 'jackson' }
 jackson-datatype-jdk8 = { group = 'com.fasterxml.jackson.datatype', name = 'jackson-datatype-jdk8', version.ref = 'jackson' }
@@ -54,6 +60,6 @@ dynamodDbLocal = { group = 'com.amazonaws', name = 'DynamoDBLocal', version.ref 
 [bundles]
 testing = ['junit-jupiter-params', 'junit-jupiter-api', 'junit-vintage-engine',
     'junit-jupiter-engine', 'mockito-core', 'hamcrest-base', 'hamcrest-core', 'hamcrest-jackson',
-    'hamcrest-optional', 'nva-logutils', 'nva-testutils']
+    'hamcrest-optional', 'nva-logutils', 'nva-testutils', 'guava', 'wiremock']
 logging = ['log4j-core', 'log4j-api', 'log4j-slf4j18-impl', 'slf4j-api', 'aws-lambda-log4j2']
 jackson = ['jackson-core', 'jackson-datatype-jdk8', 'jackson-datatype-jsr310', 'jackson-databind', 'jackson-annotations', 'jackson-module-parameter-names']

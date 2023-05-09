@@ -1,8 +1,16 @@
+apply plugin: 'io.freefair.lombok'
 dependencies {
-
+    implementation project(":orcid-testutils")
+    implementation project(":orcid-commons")
     implementation libs.nva.apigateway
     implementation libs.nva.core
+    implementation libs.nva.json
     implementation libs.bundles.logging
+
+    implementation libs.resilience4j.retry
+    implementation libs.vavr
+
+    implementation libs.aws.sdk.dynamodb
 
 }
 
