@@ -1,5 +1,5 @@
 [versions]
-nva = "1.28.0"
+nva = '1.28.4'
 hamcrest = '2.2'
 junit = { strictly = '5.8.2' }
 mockito = '4.5.1'
@@ -7,7 +7,7 @@ log4j = '2.17.1'
 slf4j = '1.8.0-beta4'
 awslog4j2 = '1.5.1'
 dynamoDbLocal = { strictly = '1.21.1' }
-awsSdk = { strictly = '1.12.369' }
+awsSdk = { strictly = '1.12.462' }
 jackson = { strictly = '2.14.1' }
 hamcrestSpotify = { strictly = '1.2.0' }
 wiremock = { strictly = "2.35.0" }
