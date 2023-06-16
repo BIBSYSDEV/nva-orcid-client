@@ -1,14 +1,18 @@
 package no.sikt.nva.orcid.commons.service;
 
 import static no.sikt.nva.orcid.commons.service.ServiceWithTransactions.newTransactWriteItemsRequest;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.TransactWriteItem;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.vavr.control.Try;
+
 import java.net.URI;
 import java.time.Clock;
 import java.util.function.Supplier;
+
+
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.sikt.nva.orcid.commons.model.exceptions.TransactionFailedException;
 import no.sikt.nva.orcid.commons.model.storage.OrcidCredentialsDao;
@@ -28,16 +32,30 @@ public class OrcidServiceImpl implements OrcidService {
 
     @Override
     public OrcidCredentials createOrcidCredentials(OrcidCredentials orcidCredentials) {
+
+        var orcidCredentialsWithTimeStamp = createOrcidCredentialsWithTimeStamp(orcidCredentials);
+        return insertOrcidCredentials(orcidCredentialsWithTimeStamp);
+    }
+
+    private OrcidCredentials createOrcidCredentialsWithTimeStamp(OrcidCredentials orcidCredentials) {
         var currentTime = clockForTimestamps.instant();
-        orcidCredentials.setModified(currentTime);
-        orcidCredentials.setCreated(currentTime);
-        return insertOrcidCredentials(orcidCredentials);
+        return OrcidCredentials.builder()
+                .withOrcid(orcidCredentials.orcid())
+                .withAccessToken(orcidCredentials.accessToken())
+                .withTokenType(orcidCredentials.tokenType())
+                .withExpiresIn(orcidCredentials.expiresIn())
+                .withTokenVersion(orcidCredentials.tokenVersion())
+                .withPersistent(orcidCredentials.persistent())
+                .withIdToken(orcidCredentials.idToken())
+                .withTokenId(orcidCredentials.tokenId())
+                .withCreated(currentTime)
+                .withModified(currentTime)
+                .build();
     }
 
     @Override
     public OrcidCredentials fetchOrcidCredentialsByOrcid(URI orcid) {
-        var orcidCredentials = new OrcidCredentials();
-        orcidCredentials.setOrcid(orcid);
+        var orcidCredentials = new OrcidCredentials(orcid, null, null, 0, null, false, null, 0, null, null);
         return readOrcidCredentialsService.getOrcidCredentials(orcidCredentials);
     }
 
@@ -50,16 +68,16 @@ public class OrcidServiceImpl implements OrcidService {
 
     private TransactWriteItem transactionItemsForOrcidCredentialsInsertion(OrcidCredentials orcidCredentials) {
         return
-            serviceWithTransactions.newPutTransactionItem(new OrcidCredentialsDao(orcidCredentials));
+                serviceWithTransactions.newPutTransactionItem(new OrcidCredentialsDao(orcidCredentials));
     }
 
     private OrcidCredentials fetchSavedOrcidCredentials(OrcidCredentials orcidCredentials) {
         var retryRegistry = RetryRegistry.ofDefaults();
         var retry = retryRegistry.retry("fetch orcid credentials");
         Supplier<OrcidCredentials> orcidCredentialsCheckedSupplier =
-            () -> readOrcidCredentialsService.getOrcidCredentials(orcidCredentials);
+                () -> readOrcidCredentialsService.getOrcidCredentials(orcidCredentials);
         return Try.ofSupplier(Retry.decorateSupplier(retry, orcidCredentialsCheckedSupplier))
-                   .getOrElseThrow(this::handleReadFailure);
+                .getOrElseThrow(this::handleReadFailure);
     }
 
     private RuntimeException handleReadFailure(Throwable fail) {

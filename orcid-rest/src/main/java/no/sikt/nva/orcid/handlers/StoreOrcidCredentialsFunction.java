@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.lambda.runtime.Context;
 import java.net.HttpURLConnection;
 import java.time.Clock;
+
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.sikt.nva.orcid.commons.model.exceptions.TransactionFailedException;
 import no.sikt.nva.orcid.commons.service.OrcidService;
@@ -51,7 +52,7 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
     @Override
     protected Void processInput(OrcidCredentials input, RequestInfo requestInfo, Context context)
         throws ApiGatewayException {
-        logger.info("Attempting to store orcid: " + input.getOrcid().toString());
+        logger.info("Attempting to store orcid: " + input.orcid().toString());
         validateInput(input, requestInfo);
         attempt(() -> orcidService.createOrcidCredentials(input))
             .orElseThrow(this::convertToCorrectApiGatewayException);
@@ -72,7 +73,7 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
         if (orcidFromCristin.isEmpty()) {
             throw new ForbiddenException();
         }
-        if (!input.getOrcid().toString().contains(orcidFromCristin.get())) {
+        if (!input.orcid().toString().contains(orcidFromCristin.get())) {
             throw new ForbiddenException();
         }
     }

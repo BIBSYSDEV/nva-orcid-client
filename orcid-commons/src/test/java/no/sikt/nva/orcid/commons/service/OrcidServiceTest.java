@@ -19,6 +19,7 @@ import com.amazonaws.services.dynamodbv2.model.GetItemResult;
 import com.amazonaws.services.kms.model.NotFoundException;
 import java.time.Clock;
 import java.util.Map;
+
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.sikt.nva.orcid.commons.model.exceptions.TransactionFailedException;
 import no.sikt.nva.orcid.commons.model.storage.OrcidCredentialsDao;
@@ -44,16 +45,16 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
     @Test
     void shouldBePossibleToStoreOrcidCredentials() {
         var orcidCredentials = randomOrcidCredentials();
-        var actual = orcidService.createOrcidCredentials(orcidCredentials.copy());
-        assertThat(actual.getModified(), doesNotHaveEmptyValues());
-        assertThat(actual.getCreated(), is(equalTo(actual.getModified())));
+        var actual = orcidService.createOrcidCredentials(orcidCredentials);
+        assertThat(actual.modified(), doesNotHaveEmptyValues());
+        assertThat(actual.created(), is(equalTo(actual.modified())));
         assertThat(actual.hasSameCredentials(orcidCredentials), is(true));
     }
 
     @Test
     void shouldThrowExceptionIfCredentialsAlreadyExists() {
         var orcidCredentials = randomOrcidCredentials();
-        orcidService.createOrcidCredentials(orcidCredentials.copy());
+        orcidService.createOrcidCredentials(orcidCredentials);
         assertThrows(TransactionFailedException.class, () -> orcidService.createOrcidCredentials(orcidCredentials));
     }
 
@@ -80,8 +81,8 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
 
     @Test
     void shouldBePossibleToRetrieveOrcidCredentials() {
-        var persistedCredentials = orcidService.createOrcidCredentials(randomOrcidCredentials().copy());
-        var retrievedCredentials = orcidService.fetchOrcidCredentialsByOrcid(persistedCredentials.getOrcid());
+        var persistedCredentials = orcidService.createOrcidCredentials(randomOrcidCredentials());
+        var retrievedCredentials = orcidService.fetchOrcidCredentialsByOrcid(persistedCredentials.orcid());
         assertThat(retrievedCredentials, is(equalTo(persistedCredentials)));
     }
 
@@ -95,7 +96,7 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
             .thenReturn(itemResult);
         orcidService = new OrcidServiceImpl(ORCID_TABLE_NAME, client, clock);
 
-        var persistedCredentials = orcidService.createOrcidCredentials(orcidCredentials.copy());
+        var persistedCredentials = orcidService.createOrcidCredentials(orcidCredentials);
         assertThat(persistedCredentials, is(equalTo(orcidCredentials)));
     }
 
@@ -107,7 +108,7 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
         orcidService = new OrcidServiceImpl(ORCID_TABLE_NAME, client, clock);
         var orcidCredentials = randomOrcidCredentials();
         var exception = assertThrows(TransactionFailedException.class,
-                                     () -> orcidService.createOrcidCredentials(orcidCredentials.copy()));
+                                     () -> orcidService.createOrcidCredentials(orcidCredentials));
         assertThat(exception.getMessage(), containsString("Error reading result"));
     }
 

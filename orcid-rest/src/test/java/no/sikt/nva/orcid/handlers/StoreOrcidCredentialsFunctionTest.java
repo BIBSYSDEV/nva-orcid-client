@@ -12,11 +12,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
+
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.file.Path;
 import java.time.Clock;
+
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.sikt.nva.orcid.commons.service.OrcidService;
 import no.sikt.nva.orcid.commons.service.OrcidServiceImpl;
@@ -73,7 +76,7 @@ class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
         var response = GatewayResponse.fromOutputStream(outputStream, Void.class);
         assertThat(response.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_CREATED)));
 
-        var persistedOrcidCredentials = orcidService.fetchOrcidCredentialsByOrcid(orcidCredentials.getOrcid());
+        var persistedOrcidCredentials = orcidService.fetchOrcidCredentialsByOrcid(orcidCredentials.orcid());
         assertThat(persistedOrcidCredentials.hasSameCredentials(orcidCredentials), is(true));
     }
 
@@ -105,7 +108,7 @@ class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
     @Test
     void shouldReturnForbiddenWhenUserDoesNotHaveTheOrcidTheyAreTryingToSubmit() throws IOException {
         var orcidCredentials = generateOrcidCredentials(UriWrapper.fromUri("https://sandbox.orcid"
-                                                                           + ".org/0000-0001-3121-1234").getUri());
+                + ".org/0000-0001-3121-1234").getUri());
         try (var inputStream = createOrcidCredentialsRequestFromString(orcidCredentials, testUserName)) {
 
             handler.handleRequest(inputStream, outputStream, CONTEXT);
@@ -141,14 +144,14 @@ class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
     }
 
     private InputStream createOrcidCredentialsRequestFromString(OrcidCredentials orcidCredentials, String userName)
-        throws JsonProcessingException {
+            throws JsonProcessingException {
         var request = dtoObjectMapper.writeValueAsString(orcidCredentials);
         return new HandlerRequestBuilder<String>(dtoObjectMapper)
-                   .withUserName(userName)
-                   .withCurrentCustomer(testOrgId)
-                   .withTopLevelCristinOrgId(topLevelCristinOrgId)
-                   .withBody(request)
-                   .build();
+                .withUserName(userName)
+                .withCurrentCustomer(testOrgId)
+                .withTopLevelCristinOrgId(topLevelCristinOrgId)
+                .withBody(request)
+                .build();
     }
 
     private OrcidCredentials generateOrcidCredentials(URI orcid) {
@@ -169,17 +172,17 @@ class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
     private void stubForPersonResponse() {
         var response = IoUtils.stringFromResources(Path.of("cristin_person_sample_response.json"));
         stubFor(WireMock.get(urlPathEqualTo("/cristin/person/123"))
-                    .willReturn(aResponse().withBody(response).withStatus(HttpURLConnection.HTTP_OK)));
+                .willReturn(aResponse().withBody(response).withStatus(HttpURLConnection.HTTP_OK)));
     }
 
     private void stubPersonResponseWithouthOrcid(String userWithoutCristinId) {
         var response = IoUtils.stringFromResources(Path.of("cristin_person_no_orcid.json"));
         stubFor(WireMock.get(urlPathEqualTo("/cristin/person/" + userWithoutCristinId))
-                    .willReturn(aResponse().withBody(response).withStatus(HttpURLConnection.HTTP_OK)));
+                .willReturn(aResponse().withBody(response).withStatus(HttpURLConnection.HTTP_OK)));
     }
 
     private void stubInternalServerResponse(String someuser) {
         stubFor(WireMock.get(urlPathEqualTo("/cristin/person/" + someuser))
-                    .willReturn(aResponse().withStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)));
+                .willReturn(aResponse().withStatus(HttpURLConnection.HTTP_INTERNAL_ERROR)));
     }
 }
