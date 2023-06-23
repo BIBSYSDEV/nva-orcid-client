@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.ItemUtils;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import java.util.Map;
+
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.unit.nva.commons.json.JsonUtils;
 

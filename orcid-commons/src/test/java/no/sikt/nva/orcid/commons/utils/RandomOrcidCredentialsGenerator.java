@@ -1,10 +1,11 @@
 package no.sikt.nva.orcid.commons.utils;
 
+import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
+
 import static no.unit.nva.testutils.RandomDataGenerator.randomBoolean;
 import static no.unit.nva.testutils.RandomDataGenerator.randomInteger;
 import static no.unit.nva.testutils.RandomDataGenerator.randomString;
 import static no.unit.nva.testutils.RandomDataGenerator.randomUri;
-import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 
 public final class RandomOrcidCredentialsGenerator {
 

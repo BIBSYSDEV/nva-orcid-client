@@ -8,6 +8,7 @@ import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
 import com.amazonaws.services.kms.model.NotFoundException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.sikt.nva.orcid.commons.model.storage.OrcidCredentialsDao;
 
@@ -24,7 +25,7 @@ public class ReadOrcidCredentialsService {
 
     public Map<String, AttributeValue> primaryKey(OrcidCredentials orcidCredentials) {
         final Map<String, AttributeValue> map = new ConcurrentHashMap<>();
-        var partKeyValue = new AttributeValue(orcidCredentials.getOrcid().toString());
+        var partKeyValue = new AttributeValue(orcidCredentials.orcid().toString());
         map.put(ORCID_PRIMARY_PARTITION_KEY, partKeyValue);
         return map;
     }

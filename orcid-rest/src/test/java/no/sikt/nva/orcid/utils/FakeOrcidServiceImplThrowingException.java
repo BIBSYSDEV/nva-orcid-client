@@ -1,6 +1,7 @@
 package no.sikt.nva.orcid.utils;
 
 import java.net.URI;
+
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.sikt.nva.orcid.commons.service.OrcidService;
 
