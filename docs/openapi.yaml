@@ -14,7 +14,7 @@ paths:
       summary: 'Stores orcid credentials and redirects to NVA-frontend'
       operationId: postOrcidCredentials
       security:
-        - CognitoUserPool: [ 'https://api.nva.unit.no/scopes/backend', 'https://api.nva.unit.no/scopes/frontend',  'aws.cognito.signin.user.admin']
+        - CognitoUserPool: [ "https://api.nva.unit.no/scopes/backend", "https://api.nva.unit.no/scopes/frontend",  "aws.cognito.signin.user.admin"]
       tags:
         - orcid
       x-amazon-apigateway-request-validator: body_only
