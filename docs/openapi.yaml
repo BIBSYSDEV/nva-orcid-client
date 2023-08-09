@@ -9,12 +9,12 @@ x-amazon-apigateway-request-validators:
     validateRequestBody: true
     validateRequestParameters: false
 paths:
-  /somepath:
+  /:
     post:
       summary: 'Stores orcid credentials and redirects to NVA-frontend'
-      operationId: postOrcidCredentials
       security:
         - CognitoUserPool: [ "https://api.nva.unit.no/scopes/backend", "https://api.nva.unit.no/scopes/frontend", "aws.cognito.signin.user.admin" ]
+      operationId: postOrcidCredentials
       tags:
         - orcid
       x-amazon-apigateway-request-validator: body_only
