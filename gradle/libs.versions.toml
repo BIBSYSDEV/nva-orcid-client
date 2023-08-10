@@ -1,5 +1,5 @@
 [versions]
-nva = '1.28.4'
+nva = '1.31.0'
 hamcrest = '2.2'
 junit = { strictly = '5.8.2' }
 mockito = '4.5.1'
@@ -7,13 +7,13 @@ log4j = '2.17.1'
 slf4j = '1.8.0-beta4'
 awslog4j2 = '1.5.1'
 dynamoDbLocal = { strictly = '1.21.1' }
-awsSdk = { strictly = '1.12.462' }
-jackson = { strictly = '2.14.1' }
+awsSdk = { prefer = '1.12.505' }
+jackson = { prefer = '2.14.1' }
 hamcrestSpotify = { strictly = '1.2.0' }
 wiremock = { strictly = "2.35.0" }
-guava = { strictly = '31.1-jre' }
-resilience4jRetry = '2.0.2'
-vavrVersion = '0.10.2'
+guava = { prefer = '32.0.0-jre' }
+resilience4jRetry = '2.1.0'
+vavrVersion = '0.10.4'
 
 [libraries]
 nva-core = { group = "com.github.bibsysdev", name = "core", version.ref = "nva" }
