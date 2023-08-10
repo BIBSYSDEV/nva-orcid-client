@@ -12,7 +12,7 @@ jackson = { strictly = '2.14.1' }
 hamcrestSpotify = { strictly = '1.2.0' }
 wiremock = { strictly = "2.35.0" }
 guava = { strictly = '31.1-jre' }
-resilience4jRetry = '2.0.2'
+resilience4jRetry = '2.1.0'
 vavrVersion = '0.10.2'
 
 [libraries]
