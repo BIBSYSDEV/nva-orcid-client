@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
   version: '1.0'
   title: 'NVA orcid client api'
@@ -12,13 +12,9 @@ paths:
   /:
     post:
       summary: 'Stores orcid credentials and redirects to NVA-frontend'
-      operationId: postOrcidCredentials
       security:
-        - CognitoUserPool: [
-          'https://api.nva.unit.no/scopes/backend',
-          'https://api.nva.unit.no/scopes/frontend',
-          'aws.cognito.signin.user.admin'
-        ]
+        - CognitoUserPool: [ "https://api.nva.unit.no/scopes/backend", "https://api.nva.unit.no/scopes/frontend", "aws.cognito.signin.user.admin" ]
+      operationId: postOrcidCredentials
       tags:
         - orcid
       x-amazon-apigateway-request-validator: body_only
@@ -48,7 +44,7 @@ paths:
         201:
           description: 'Orcid credentials sucessfully stored'
           content:
-            application/json: {}
+            application/json: { }
         400:
           description: Bad request
           content:
@@ -131,3 +127,14 @@ components:
         type:
           type: string
           description: A URI describing the error and mitigations, in generic cases, this is about:blank
+  securitySchemes:
+    CognitoUserPool:
+      type: apiKey
+      name: Authorization
+      in: header
+      x-amazon-apigateway-authtype: cognito_user_pools
+      x-amazon-apigateway-authorizer:
+        type: cognito_user_pools
+        providerARNs:
+          - Ref:
+              CognitoAuthorizerArn

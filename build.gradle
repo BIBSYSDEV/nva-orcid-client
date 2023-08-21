@@ -1,45 +1,17 @@
-plugins {
-    id 'nva-orcid-client.java-library-conventions'
+plugins{
+    id 'nva.orcid.client.rootplugin'
 }
 
-allprojects {
-    apply plugin: 'nva-orcid-client.java-library-conventions'
+//workaround for jacoco-merge to work
+allprojects{
+    apply plugin: 'nva.orcid.client.java-conventions'
+    apply plugin: 'nva.orcid.client.dynamo-db'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17  // source-code version and must be <= targetCompatibility
-targetCompatibility = JavaVersion.VERSION_17 // bytecode target version
-
+tasks.withType(JavaCompile) {
+    options.release = 17
+}
 wrapper {
+    gradleVersion = '8.2.1'
     distributionType = Wrapper.DistributionType.ALL
-    gradleVersion = "7.4.2"
-}
-
-subprojects {
-    // For using DynamoDB locally
-    configurations.testImplementation.canBeResolved = true
-    task copyNativeDeps(type: Copy) {
-        from(configurations.testImplementation) {
-            include "*.dylib"
-            include "*.so"
-            include "*.dll"
-        }
-        into 'build/dynamodb-local'
-    }
-
-    test {
-        dependsOn copyNativeDeps
-        systemProperty "java.library.path", 'build/dynamodb-local'
-    }
-}
-
-build {
-    dependsOn jacocoRootReport
-}
-
-dependencies {
-    implementation 'com.github.bibsysdev:logutils:1.28.0'
-}
-
-repositories {
-    mavenCentral()
 }
