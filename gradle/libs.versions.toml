@@ -5,7 +5,7 @@ junit = { strictly = '5.8.2' }
 mockito = '4.5.1'
 log4j = '2.17.1'
 slf4j = '1.8.0-beta4'
-awslog4j2 = '1.5.1'
+awslog4j2 = '1.6.0'
 dynamoDbLocal = { strictly = '1.21.1' }
 awsSdk = { prefer = '1.12.505' }
 jackson = { prefer = '2.14.1' }
