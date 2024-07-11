@@ -50,10 +50,16 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
     }
 
     @Override
+    protected void validateRequest(OrcidCredentials orcidCredentials, RequestInfo requestInfo, Context context)
+        throws ApiGatewayException {
+        logger.info("Attempting to store orcid: " + orcidCredentials.orcid().toString());
+        validateInput(orcidCredentials, requestInfo);
+    }
+
+    @Override
     protected Void processInput(OrcidCredentials input, RequestInfo requestInfo, Context context)
         throws ApiGatewayException {
-        logger.info("Attempting to store orcid: " + input.orcid().toString());
-        validateInput(input, requestInfo);
+
         attempt(() -> orcidService.createOrcidCredentials(input))
             .orElseThrow(this::convertToCorrectApiGatewayException);
         return null;
