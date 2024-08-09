@@ -1,5 +1,5 @@
 [versions]
-nva = '1.40.6'
+nva = '1.40.8'
 hamcrest = '2.2'
 junit = { strictly = '5.10.2' }
 mockito = { strictly = '5.10.0' }
