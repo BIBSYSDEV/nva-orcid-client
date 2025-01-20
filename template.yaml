@@ -197,7 +197,7 @@ Resources:
       Handler: index.lambda_handler
       Timeout: 30
       Role: !GetAtt ApiGatewayCreateDeploymentLambdaRole.Arn
-      Runtime: python3.8
+      Runtime: python3.12
       Code:
         ZipFile: |
           import json, boto3
