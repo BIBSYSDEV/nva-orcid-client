@@ -10,6 +10,6 @@ jobs:
   build:
     uses: BIBSYSDEV/nva-github-workflows/.github/workflows/java.yml@v1
     input:
-      java_version: 17
+      java_version: 21
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
