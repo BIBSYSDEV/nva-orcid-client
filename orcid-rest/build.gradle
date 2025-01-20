@@ -1,4 +1,3 @@
-apply plugin: 'io.freefair.lombok'
 dependencies {
     implementation project(":orcid-testutils")
     implementation project(":orcid-commons")
