@@ -11,22 +11,6 @@
 
   <rule ref="category/java/errorprone.xml">
     <exclude name="MissingSerialVersionUID"/>
-    <exclude name="NonSerializableClass"/>
-  </rule>
-
-  <rule ref="category/java/multithreading.xml">
-    <!-- Because it complains for the Map interface in the Resource class.-->
-    <exclude name="UseConcurrentHashMap"/>
-  </rule>
-
-  <rule ref="category/java/bestpractices.xml">
-    <exclude name="SystemPrintln"/>
-    <exclude name="GuardLogStatement"/>
-    <exclude name="AvoidPrintStackTrace"/>
-
-    <!-- In TableManager we map ResourceNotFoundException to TableNotFoundException -->
-    <exclude name="PreserveStackTrace"/>
-
   </rule>
 
   <rule ref="category/java/codestyle.xml">
@@ -39,26 +23,11 @@
     <exclude name="MethodArgumentCouldBeFinal"/>
     <exclude name="TooManyStaticImports"/>
     <exclude name="UseExplicitTypes"/>
-    <exclude name="ClassNamingConventions"/>
-    <exclude name="UnnecessaryConstructor"/>
-    <!-- Conflicts with the rule category/java/codestyle.xml/AvoidProtectedMethodInFinalClassNotExtending -->
-    <exclude name="CommentDefaultAccessModifier"/>
-    <!-- Conflicts with the rule category/java/codestyle.xml/AvoidProtectedMethodInFinalClassNotExtending -->
-
-    <exclude name="ConfusingTernary"/>
     <exclude name="FieldNamingConventions"/>
 
     <!-- Sometimes it is useful in debugging to assign the return value to a local variable  -->
     <exclude name="UnnecessaryLocalBeforeReturn"/>
   </rule>
-
-
-
-  <rule ref="category/java/performance.xml">
-    <!-- https://softwareengineering.stackexchange.com/questions/149563/should-we-avoid-object-creation-in-java -->
-    <exclude name="AvoidInstantiatingObjectsInLoops"/>
-  </rule>
-
 
   <rule ref="category/java/design.xml">
     <exclude name="LoosePackageCoupling"/>
@@ -70,14 +39,6 @@
     <exclude name="UseUtilityClass"/>
     <exclude name="UseObjectForClearerAPI"/>
     <exclude name="TooManyMethods"/>
-    <exclude name="CyclomaticComplexity"/>
-
-    <!-- This rule does not allow the Lambda Handler to cast  the ContainerInitializationException
-        to a RuntimeException.
-        //TODO investigate if we replace the handler's RuntimeException with something else
-   -->
-    <exclude name="AvoidThrowingRawExceptionTypes"/>
-
   </rule>
 
 </ruleset>
