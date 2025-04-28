@@ -40,11 +40,12 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
                  AmazonDynamoDBClientBuilder.defaultClient(),
                  Clock.systemDefaultZone()),
              UserOrcidResolver.defaultUserOrcidResolver(
-                 new Environment().readEnv(API_HOST)));
+                 new Environment().readEnv(API_HOST)), new Environment());
     }
 
-    public StoreOrcidCredentialsFunction(OrcidService orcidService, UserOrcidResolver userOrcidResolver) {
-        super(OrcidCredentials.class);
+    public StoreOrcidCredentialsFunction(OrcidService orcidService, UserOrcidResolver userOrcidResolver,
+                                         Environment environment) {
+        super(OrcidCredentials.class, environment);
         this.orcidService = orcidService;
         this.userOrcidResolver = userOrcidResolver;
     }

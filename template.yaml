@@ -8,6 +8,9 @@ Parameters:
     Type: 'AWS::SSM::Parameter::Value<String>'
     Description: Reference to Cognito UserPool for the stage
     Default: CognitoAuthorizerArn
+  CognitoAuthorizerUrls:
+    Type: AWS::SSM::Parameter::Value<CommaDelimitedList>
+    Default: CognitoAuthorizerUrls
   CustomDomain:
     Type: 'AWS::SSM::Parameter::Value<String>'
     Description: The default domain that is used as from_address
@@ -42,6 +45,10 @@ Globals:
     Timeout: 900
     MemorySize: 1798
     Runtime: java17
+    Environment:
+      Variables:
+        API_HOST: !Ref ApiDomain
+        COGNITO_AUTHORIZER_URLS: !Join [ ",", !Ref CognitoAuthorizerUrls ]
 
 Resources:
 
@@ -140,7 +147,6 @@ Resources:
         Variables:
           ALLOWED_ORIGIN: !Ref AllowedOrigins
           TABLE_NAME: !Ref NvaOrcidTable
-          API_HOST: !Ref ApiDomain
       Events:
         postOrcidCredentials:
           Type: Api

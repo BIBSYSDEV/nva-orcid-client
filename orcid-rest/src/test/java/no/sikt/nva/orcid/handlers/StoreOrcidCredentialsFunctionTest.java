@@ -35,6 +35,7 @@ import no.sikt.nva.orcid.utils.FakeOrcidServiceImplThrowingException;
 import no.unit.nva.stubs.WiremockHttpClient;
 import no.unit.nva.testutils.HandlerRequestBuilder;
 import nva.commons.apigateway.GatewayResponse;
+import nva.commons.core.Environment;
 import nva.commons.core.ioutils.IoUtils;
 import nva.commons.core.paths.UriWrapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +63,7 @@ class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
         this.userOrcidResolver = new UserOrcidResolver(WiremockHttpClient.create(),
                                                        wireMockRuntimeInfo.getHttpsBaseUrl().replace(
                                                            "https://", ""));
-        this.handler = new StoreOrcidCredentialsFunction(orcidService, userOrcidResolver);
+        this.handler = new StoreOrcidCredentialsFunction(orcidService, userOrcidResolver, new Environment());
         outputStream = new ByteArrayOutputStream();
     }
 
@@ -84,7 +85,8 @@ class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
     void shouldReturnBadGatewayWhenOrcidServiceIsUnreachable() throws IOException {
         var orcidCredentials = generateOrcidCredentials(orcidForTestUser);
         var fakeOrcidServiceThrowingException = new FakeOrcidServiceImplThrowingException();
-        handler = new StoreOrcidCredentialsFunction(fakeOrcidServiceThrowingException, userOrcidResolver);
+        handler = new StoreOrcidCredentialsFunction(fakeOrcidServiceThrowingException, userOrcidResolver,
+                                                    new Environment());
         try (var inputStream = createOrcidCredentialsRequestFromString(orcidCredentials, testUserName)) {
 
             handler.handleRequest(inputStream, outputStream, CONTEXT);
