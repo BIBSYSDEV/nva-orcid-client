@@ -44,7 +44,7 @@ Globals:
   Function:
     Timeout: 900
     MemorySize: 1798
-    Runtime: java17
+    Runtime: java21
     Environment:
       Variables:
         API_HOST: !Ref ApiDomain
@@ -141,7 +141,6 @@ Resources:
       CodeUri: orcid-rest
       Handler: no.sikt.nva.orcid.handlers.StoreOrcidCredentialsFunction::handleRequest
       Role: !GetAtt LambdaRole.Arn
-      Runtime: java17
       MemorySize: 1798
       Environment:
         Variables:
