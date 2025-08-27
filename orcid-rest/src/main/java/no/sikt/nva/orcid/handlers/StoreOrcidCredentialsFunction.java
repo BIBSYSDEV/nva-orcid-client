@@ -4,8 +4,10 @@ import static nva.commons.core.attempt.Try.attempt;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.lambda.runtime.Context;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.time.Clock;
 
+import java.util.Arrays;
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.sikt.nva.orcid.commons.model.exceptions.TransactionFailedException;
 import no.sikt.nva.orcid.commons.service.OrcidService;
@@ -16,7 +18,6 @@ import nva.commons.apigateway.exceptions.ApiGatewayException;
 import nva.commons.apigateway.exceptions.BadGatewayException;
 import nva.commons.apigateway.exceptions.ConflictException;
 import nva.commons.apigateway.exceptions.ForbiddenException;
-import nva.commons.apigateway.exceptions.UnauthorizedException;
 import nva.commons.core.Environment;
 import nva.commons.core.JacocoGenerated;
 import nva.commons.core.attempt.Failure;
@@ -54,7 +55,8 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
     @Override
     protected void validateRequest(OrcidCredentials orcidCredentials, RequestInfo requestInfo, Context context)
         throws ApiGatewayException {
-        logger.info("Attempting to store orcid: {} for {}", orcidCredentials.orcid(), requestInfo.getUserName());
+        logger.info("Attempting to validate orcid: {} for {}", orcidCredentials.orcid(),
+                    attempt(requestInfo::getPersonCristinId).orElse(e -> null));
         validateInput(orcidCredentials, requestInfo);
     }
 
@@ -73,18 +75,27 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
     }
 
     private void validateInput(OrcidCredentials input, RequestInfo requestInfo)
-        throws ForbiddenException, BadGatewayException, UnauthorizedException {
-        var userName = requestInfo.getUserName();
+        throws ForbiddenException, BadGatewayException {
+        var cristinId =
+            attempt(requestInfo::getPersonCristinId)
+                .map(this::getLastPathSegmentAsInt)
+                .orElseThrow(e -> new ForbiddenException());
+
+        logger.info("Attempting to store orcid: {} for {}", input.orcid(), cristinId);
         var orcidFromCristin =
-            attempt(() -> userOrcidResolver.extractOrcidForUser(userName)).orElseThrow(
+            attempt(() -> userOrcidResolver.extractOrcidForUser(cristinId)).orElseThrow(
                 fail -> new BadGatewayException(
-                    String.format(EXTRACT_ORCID_BAD_GATEWAY, userName, fail.getException())));
+                    String.format(EXTRACT_ORCID_BAD_GATEWAY, cristinId, fail.getException())));
         if (orcidFromCristin.isEmpty()) {
             throw new ForbiddenException();
         }
         if (!input.orcid().toString().contains(orcidFromCristin.get())) {
             throw new ForbiddenException();
         }
+    }
+
+    private Integer getLastPathSegmentAsInt(URI uri) {
+        return Integer.valueOf(Arrays.stream(uri.getPath().split("/")).toList().getLast());
     }
 
     private ApiGatewayException convertToCorrectApiGatewayException(Failure<OrcidCredentials> fail) {

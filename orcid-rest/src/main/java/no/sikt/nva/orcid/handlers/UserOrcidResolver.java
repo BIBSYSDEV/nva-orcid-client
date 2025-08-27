@@ -24,7 +24,6 @@ import org.apache.http.client.utils.URIBuilder;
 public class UserOrcidResolver {
 
     public static final String CRISTIN_API_ERROR_MESSAGE = "Cristin api answered with status: ";
-    public static final String USERNAME_DELIMITER = "@";
     public static final String HTTPS_SCHEME = "https";
     private static final String ACCEPT = "Accept";
     private static final String APPLICATION_JSON = "application/json";
@@ -43,25 +42,21 @@ public class UserOrcidResolver {
         return new UserOrcidResolver(HttpClient.newBuilder().build(), apiHost);
     }
 
-    public Optional<String> extractOrcidForUser(String userName) {
-        return attempt(() -> craftUserUri(userName))
+    public Optional<String> extractOrcidForUser(Integer cristinId) {
+        return attempt(() -> craftUserUri(cristinId))
                    .map(this::createRequest)
                    .map(this::extractCristinPersonResponse)
                    .map(this::extractOrcidFromResponse)
                    .orElseThrow(this::handleFailure);
     }
 
-    private static String constructPersonPath(String userName) {
-        return CRISTIN_PERSON_PATH + extractUserIdentifierFromUserName(userName);
+    private static String constructPersonPath(Integer cristinId) {
+        return CRISTIN_PERSON_PATH + cristinId;
     }
 
-    private static String extractUserIdentifierFromUserName(String userName) {
-        return userName.split(USERNAME_DELIMITER)[0];
-    }
-
-    private URI craftUserUri(String userName) throws URISyntaxException {
+    private URI craftUserUri(Integer cristinId) throws URISyntaxException {
         return
-            new URIBuilder().setHost(apiHost).setPath(constructPersonPath(userName)).setScheme(HTTPS_SCHEME).build();
+            new URIBuilder().setHost(apiHost).setPath(constructPersonPath(cristinId)).setScheme(HTTPS_SCHEME).build();
     }
 
     private RuntimeException handleFailure(Failure<Optional<String>> fail) {
