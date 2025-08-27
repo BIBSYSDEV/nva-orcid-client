@@ -4,10 +4,8 @@ import static nva.commons.core.attempt.Try.attempt;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.lambda.runtime.Context;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.time.Clock;
 
-import java.util.Arrays;
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.sikt.nva.orcid.commons.model.exceptions.TransactionFailedException;
 import no.sikt.nva.orcid.commons.service.OrcidService;
@@ -21,6 +19,7 @@ import nva.commons.apigateway.exceptions.ForbiddenException;
 import nva.commons.core.Environment;
 import nva.commons.core.JacocoGenerated;
 import nva.commons.core.attempt.Failure;
+import nva.commons.core.paths.UriWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +77,9 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
         throws ForbiddenException, BadGatewayException {
         var cristinId =
             attempt(requestInfo::getPersonCristinId)
-                .map(this::getLastPathSegmentAsInt)
+                .map(UriWrapper::fromUri)
+                .map(UriWrapper::getLastPathElement)
+                .map(Integer::valueOf)
                 .orElseThrow(e -> new ForbiddenException());
 
         logger.info("Attempting to store orcid: {} for {}", input.orcid(), cristinId);
@@ -92,10 +93,6 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
         if (!input.orcid().toString().contains(orcidFromCristin.get())) {
             throw new ForbiddenException();
         }
-    }
-
-    private Integer getLastPathSegmentAsInt(URI uri) {
-        return Integer.valueOf(Arrays.stream(uri.getPath().split("/")).toList().getLast());
     }
 
     private ApiGatewayException convertToCorrectApiGatewayException(Failure<OrcidCredentials> fail) {
