@@ -30,6 +30,7 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
     private static final String ORCID_CREDENTIALS_ALREADY_EXISTS = "Orcid credentials already exists";
     private static final String TABLE_NAME = "TABLE_NAME";
     private static final String API_HOST = "API_HOST";
+    private static final String EXTRACT_ORCID_BAD_GATEWAY = "Could not contact cristin API for %s. Exception: %s";
     private final OrcidService orcidService;
     private final UserOrcidResolver userOrcidResolver;
 
@@ -53,7 +54,7 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
     @Override
     protected void validateRequest(OrcidCredentials orcidCredentials, RequestInfo requestInfo, Context context)
         throws ApiGatewayException {
-        logger.info("Attempting to store orcid: " + orcidCredentials.orcid().toString());
+        logger.info("Attempting to store orcid: {} for {}", orcidCredentials.orcid(), requestInfo.getUserName());
         validateInput(orcidCredentials, requestInfo);
     }
 
@@ -76,7 +77,8 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
         var userName = requestInfo.getUserName();
         var orcidFromCristin =
             attempt(() -> userOrcidResolver.extractOrcidForUser(userName)).orElseThrow(
-                fail -> new BadGatewayException("Could not contact cristin API"));
+                fail -> new BadGatewayException(
+                    String.format(EXTRACT_ORCID_BAD_GATEWAY, userName, fail.getException())));
         if (orcidFromCristin.isEmpty()) {
             throw new ForbiddenException();
         }
