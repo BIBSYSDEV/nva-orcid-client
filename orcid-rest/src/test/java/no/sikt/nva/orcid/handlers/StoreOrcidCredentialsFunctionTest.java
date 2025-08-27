@@ -122,8 +122,8 @@ class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
     @Test
     void shouldReturnForbiddenWhenUserDoesNotHaveOrcid() throws IOException {
         var orcidCredentials = generateOrcidCredentials(orcidForTestUser);
-        var userWithoutOrcid = "someuser@185.39.55.0";
-        stubPersonResponseWithouthOrcid("someuser");
+        var userWithoutOrcid = "123@185.39.55.0";
+        stubPersonResponseWithouthOrcid("123");
         try (var inputStream = createOrcidCredentialsRequestFromString(orcidCredentials, userWithoutOrcid)) {
 
             handler.handleRequest(inputStream, outputStream, CONTEXT);
@@ -135,8 +135,8 @@ class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
     @Test
     void shouldReturnBadGatewayIfCristinApiIsUnavailable() throws IOException {
         var orcidCredentials = generateOrcidCredentials(orcidForTestUser);
-        var user = "someuser@185.39.55.0";
-        stubInternalServerResponse("someuser");
+        var user = "234@185.39.55.0";
+        stubInternalServerResponse("234");
         try (var inputStream = createOrcidCredentialsRequestFromString(orcidCredentials, user)) {
 
             handler.handleRequest(inputStream, outputStream, CONTEXT);
@@ -145,15 +145,54 @@ class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
         assertThat(response.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_BAD_GATEWAY)));
     }
 
+    @Test
+    void shouldReturnForbiddenIfNonNumericCristinId() throws IOException {
+        var orcidCredentials = generateOrcidCredentials(orcidForTestUser);
+        var user = "non-numeric@185.39.55.0";
+        stubInternalServerResponse("non-numeric");
+        try (var inputStream = createOrcidCredentialsRequestFromString(orcidCredentials, user)) {
+
+            handler.handleRequest(inputStream, outputStream, CONTEXT);
+        }
+        var response = GatewayResponse.fromOutputStream(outputStream, Void.class);
+        assertThat(response.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_FORBIDDEN)));
+    }
+
+    @Test
+    void shouldReturnForbiddenIfMissingCristinId() throws IOException {
+        var orcidCredentials = generateOrcidCredentials(orcidForTestUser);
+        var user = "non-numeric@185.39.55.0";
+        stubInternalServerResponse("non-numeric");
+        try (var inputStream = createOrcidCredentialsRequestWithMissingPersinId(orcidCredentials, user)) {
+
+            handler.handleRequest(inputStream, outputStream, CONTEXT);
+        }
+        var response = GatewayResponse.fromOutputStream(outputStream, Void.class);
+        assertThat(response.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_FORBIDDEN)));
+    }
+
+
     private InputStream createOrcidCredentialsRequestFromString(OrcidCredentials orcidCredentials, String userName)
             throws JsonProcessingException {
         var request = dtoObjectMapper.writeValueAsString(orcidCredentials);
         return new HandlerRequestBuilder<String>(dtoObjectMapper)
-                .withUserName(userName)
                 .withCurrentCustomer(testOrgId)
                 .withTopLevelCristinOrgId(topLevelCristinOrgId)
+                .withPersonCristinId(URI.create("%s/%s".formatted(randomUri(), userName.split("@")[0])))
                 .withBody(request)
                 .build();
+    }
+
+    private InputStream createOrcidCredentialsRequestWithMissingPersinId(OrcidCredentials orcidCredentials,
+                                                                      String userName)
+        throws JsonProcessingException {
+        var request = dtoObjectMapper.writeValueAsString(orcidCredentials);
+        return new HandlerRequestBuilder<String>(dtoObjectMapper)
+                   .withUserName(userName)
+                   .withCurrentCustomer(testOrgId)
+                   .withTopLevelCristinOrgId(topLevelCristinOrgId)
+                   .withBody(request)
+                   .build();
     }
 
     private OrcidCredentials generateOrcidCredentials(URI orcid) {

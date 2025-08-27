@@ -16,10 +16,10 @@ import nva.commons.apigateway.exceptions.ApiGatewayException;
 import nva.commons.apigateway.exceptions.BadGatewayException;
 import nva.commons.apigateway.exceptions.ConflictException;
 import nva.commons.apigateway.exceptions.ForbiddenException;
-import nva.commons.apigateway.exceptions.UnauthorizedException;
 import nva.commons.core.Environment;
 import nva.commons.core.JacocoGenerated;
 import nva.commons.core.attempt.Failure;
+import nva.commons.core.paths.UriWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,8 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
     @Override
     protected void validateRequest(OrcidCredentials orcidCredentials, RequestInfo requestInfo, Context context)
         throws ApiGatewayException {
-        logger.info("Attempting to store orcid: {} for {}", orcidCredentials.orcid(), requestInfo.getUserName());
+        logger.info("Attempting to validate orcid: {} for {}", orcidCredentials.orcid(),
+                    attempt(requestInfo::getPersonCristinId).orElse(e -> null));
         validateInput(orcidCredentials, requestInfo);
     }
 
@@ -73,12 +74,19 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
     }
 
     private void validateInput(OrcidCredentials input, RequestInfo requestInfo)
-        throws ForbiddenException, BadGatewayException, UnauthorizedException {
-        var userName = requestInfo.getUserName();
+        throws ForbiddenException, BadGatewayException {
+        var cristinId =
+            attempt(requestInfo::getPersonCristinId)
+                .map(UriWrapper::fromUri)
+                .map(UriWrapper::getLastPathElement)
+                .map(Integer::valueOf)
+                .orElseThrow(e -> new ForbiddenException());
+
+        logger.info("Attempting to store orcid: {} for {}", input.orcid(), cristinId);
         var orcidFromCristin =
-            attempt(() -> userOrcidResolver.extractOrcidForUser(userName)).orElseThrow(
+            attempt(() -> userOrcidResolver.extractOrcidForUser(cristinId)).orElseThrow(
                 fail -> new BadGatewayException(
-                    String.format(EXTRACT_ORCID_BAD_GATEWAY, userName, fail.getException())));
+                    String.format(EXTRACT_ORCID_BAD_GATEWAY, cristinId, fail.getException())));
         if (orcidFromCristin.isEmpty()) {
             throw new ForbiddenException();
         }
