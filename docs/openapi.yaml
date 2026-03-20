@@ -2,8 +2,16 @@ openapi: 3.0.3
 info:
   version: '1.0'
   title: 'NVA orcid client api'
+  description: 'API for storing ORCID credentials in NVA'
+  contact:
+    name: Sikt
   license:
     name: MIT
+servers:
+  - url: https://api.nva.unit.no
+tags:
+  - name: orcid
+    description: ORCID credential operations
 x-amazon-apigateway-request-validators:
   body_only:
     validateRequestBody: true
@@ -12,6 +20,7 @@ paths:
   /:
     post:
       summary: 'Stores orcid credentials and redirects to NVA-frontend'
+      description: 'Stores ORCID credentials for the authenticated user and redirects to NVA-frontend'
       security:
         - CognitoUserPool: [ "https://api.nva.unit.no/scopes/backend", "https://api.nva.unit.no/scopes/frontend", "aws.cognito.signin.user.admin" ]
       operationId: postOrcidCredentials
@@ -32,38 +41,38 @@ paths:
               $ref: '#/components/schemas/OrcidCredentials'
             example:
               orcid: https://orcid.org/0000-0001-5727-2427
-              access_token: 00000000-0000-0000-0000-000000000000
-              token_type: bearer
-              expires_in: 599
-              tokenVersion: 1
+              accessToken: 00000000-0000-0000-0000-000000000000
+              tokenType: bearer
+              expiresIn: 599
+              tokenVersion: "1"
               persistent: true
-              id_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+              idToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
               tokenId: 11111111
 
       responses:
-        201:
+        '201':
           description: 'Orcid credentials sucessfully stored'
           content:
             application/json: { }
-        400:
+        '400':
           description: Bad request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        403:
+        '403':
           description: Forbidden
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        409:
+        '409':
           description: Conflict, credentials for orcid already exists
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Problem"
-        502:
+        '502':
           description: Bad gateway
           content:
             application/json:
