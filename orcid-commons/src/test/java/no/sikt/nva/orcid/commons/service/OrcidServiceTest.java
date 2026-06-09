@@ -12,10 +12,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.GetItemResult;
 import java.time.Clock;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -27,6 +23,12 @@ import no.sikt.nva.orcid.commons.OrcidLocalTestDatabase;
 import nva.commons.core.paths.UriWrapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
+import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
+import software.amazon.awssdk.services.dynamodb.model.GetItemResponse;
+import software.amazon.awssdk.services.dynamodb.model.TransactWriteItemsRequest;
 
 public class OrcidServiceTest extends OrcidLocalTestDatabase {
 
@@ -60,8 +62,8 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
 
     @Test
     void shouldThrowExceptionIfDynamoIsNotWorking() {
-        client = mock(AmazonDynamoDB.class);
-        doThrow(RuntimeException.class).when(client).transactWriteItems(any());
+        client = mock(DynamoDbClient.class);
+        doThrow(RuntimeException.class).when(client).transactWriteItems(any(TransactWriteItemsRequest.class));
         orcidService = new OrcidServiceImpl(ORCID_TABLE_NAME, client, clock);
         var orcidCredentials = randomOrcidCredentials();
         assertThrows(TransactionFailedException.class, () -> orcidService.createOrcidCredentials(orcidCredentials));
@@ -76,7 +78,7 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
     @Test
     void shouldThrowExceptionWhenOrcidIsNull() {
         var orcid = UriWrapper.fromUri("").getUri();
-        assertThrows(AmazonServiceException.class, () -> orcidService.fetchOrcidCredentialsByOrcid(orcid));
+        assertThrows(DynamoDbException.class, () -> orcidService.fetchOrcidCredentialsByOrcid(orcid));
     }
 
     @Test
@@ -90,8 +92,8 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
     void shouldNotGiveUpOnFirstTryToSaveCredentials() {
         var orcidCredentials = randomOrcidCredentials();
         var itemResult = generateItemResult(orcidCredentials);
-        client = mock(AmazonDynamoDB.class);
-        when(client.getItem(any()))
+        client = mock(DynamoDbClient.class);
+        when(client.getItem(any(GetItemRequest.class)))
             .thenThrow(RuntimeException.class)
             .thenReturn(itemResult);
         orcidService = new OrcidServiceImpl(ORCID_TABLE_NAME, client, clock);
@@ -102,8 +104,8 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
 
     @Test
     void shouldThrowExceptionIfOrcidCredentialsCannotBeFoundAfterSave() {
-        client = mock(AmazonDynamoDB.class);
-        when(client.getItem(any()))
+        client = mock(DynamoDbClient.class);
+        when(client.getItem(any(GetItemRequest.class)))
             .thenThrow(RuntimeException.class);
         orcidService = new OrcidServiceImpl(ORCID_TABLE_NAME, client, clock);
         var orcidCredentials = randomOrcidCredentials();
@@ -112,10 +114,8 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
         assertThat(exception.getMessage(), containsString("Error reading result"));
     }
 
-    private GetItemResult generateItemResult(OrcidCredentials orcidCredentials) {
-        var getItemResult = new GetItemResult();
-        getItemResult.withItem(generateAttributes(orcidCredentials));
-        return getItemResult;
+    private GetItemResponse generateItemResult(OrcidCredentials orcidCredentials) {
+        return GetItemResponse.builder().item(generateAttributes(orcidCredentials)).build();
     }
 
     private Map<String, AttributeValue> generateAttributes(OrcidCredentials orcidCredentials) {

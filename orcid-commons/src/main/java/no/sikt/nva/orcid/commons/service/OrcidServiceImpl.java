@@ -2,8 +2,6 @@ package no.sikt.nva.orcid.commons.service;
 
 import static no.sikt.nva.orcid.commons.service.ServiceWithTransactions.newTransactWriteItemsRequest;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.model.TransactWriteItem;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.vavr.control.Try;
@@ -16,6 +14,8 @@ import java.util.function.Supplier;
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.sikt.nva.orcid.commons.model.exceptions.TransactionFailedException;
 import no.sikt.nva.orcid.commons.model.storage.OrcidCredentialsDao;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.dynamodb.model.TransactWriteItem;
 
 public class OrcidServiceImpl implements OrcidService {
 
@@ -24,7 +24,7 @@ public class OrcidServiceImpl implements OrcidService {
     private final ServiceWithTransactions serviceWithTransactions;
     private final ReadOrcidCredentialsService readOrcidCredentialsService;
 
-    public OrcidServiceImpl(String orcidTableName, AmazonDynamoDB client, Clock clock) {
+    public OrcidServiceImpl(String orcidTableName, DynamoDbClient client, Clock clock) {
         this.serviceWithTransactions = new ServiceWithTransactions(client, orcidTableName);
         this.clockForTimestamps = clock;
         this.readOrcidCredentialsService = new ReadOrcidCredentialsService(client, orcidTableName);

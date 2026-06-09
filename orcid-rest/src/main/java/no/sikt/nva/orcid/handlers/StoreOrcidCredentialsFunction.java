@@ -1,7 +1,6 @@
 package no.sikt.nva.orcid.handlers;
 
 import static nva.commons.core.attempt.Try.attempt;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.lambda.runtime.Context;
 import java.net.HttpURLConnection;
 import java.time.Clock;
@@ -22,6 +21,7 @@ import nva.commons.core.attempt.Failure;
 import nva.commons.core.paths.UriWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCredentials, Void> {
 
@@ -38,7 +38,7 @@ public class StoreOrcidCredentialsFunction extends ApiGatewayHandler<OrcidCreden
     public StoreOrcidCredentialsFunction() {
         this(new OrcidServiceImpl(
                  new Environment().readEnv(TABLE_NAME),
-                 AmazonDynamoDBClientBuilder.defaultClient(),
+                 DynamoDbClient.create(),
                  Clock.systemDefaultZone()),
              UserOrcidResolver.defaultUserOrcidResolver(
                  new Environment().readEnv(API_HOST)), new Environment());
