@@ -4,19 +4,19 @@ plugins {
 }
 
 dependencies {
-    api(nvaCatalog.aws.sdk.dynamo)
+    api(nvaCatalog.aws.sdk2.dynamo)
     api(nvaCatalog.jackson.annotations)
     api(nvaCatalog.jackson.databind)
     api(nvaLibs.json)
+    implementation(nvaCatalog.aws.sdk2.dynamodbenhanced)
     implementation(nvaCatalog.resilience4j.retry)
     implementation(nvaCatalog.vavr)
     implementation(nvaLibs.core)
     runtimeOnly(nvaCatalog.jackson.datatype.jsr310)
-    testFixturesApi(nvaCatalog.aws.sdk.dynamo)
+    testFixturesApi(nvaCatalog.aws.sdk2.dynamo)
     testFixturesApi(nvaCatalog.junit.jupiter.api)
     testFixturesImplementation(nvaCatalog.aws.dynamodb.local)
     testFixturesImplementation(nvaLibs.core)
-    testImplementation(nvaCatalog.aws.java.sdk.core)
     testImplementation(nvaCatalog.hamcrest)
     testImplementation(nvaCatalog.junit.jupiter.api)
     testImplementation(nvaCatalog.mockito.core)

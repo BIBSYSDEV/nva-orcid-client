@@ -1,13 +1,12 @@
 package no.sikt.nva.orcid.commons.model.storage;
 
 import static nva.commons.core.attempt.Try.attempt;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.ItemUtils;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import java.util.Map;
 
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.unit.nva.commons.json.JsonUtils;
+import software.amazon.awssdk.enhanced.dynamodb.document.EnhancedDocument;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 public class OrcidCredentialsDao {
 
@@ -26,15 +25,12 @@ public class OrcidCredentialsDao {
     }
 
     public Map<String, AttributeValue> toDynamoFormat() {
-        var item = attempt(() -> Item.fromJSON(
-            JsonUtils.dynamoObjectMapper.writeValueAsString(this.getOrcidCredentials()))).orElseThrow();
-        return ItemUtils.toAttributeValues(item);
+        return attempt(() -> EnhancedDocument.fromJson(
+            JsonUtils.dynamoObjectMapper.writeValueAsString(this.getOrcidCredentials())).toMap()).orElseThrow();
     }
 
     private static OrcidCredentials fromDynamoFormat(Map<String, AttributeValue> valuesMap) {
-        var item = ItemUtils.toItem(valuesMap);
-        return attempt(() -> JsonUtils.dynamoObjectMapper
-                                 .readValue(item.toJSON(), OrcidCredentials.class))
-                   .orElseThrow();
+        var json = EnhancedDocument.fromAttributeValueMap(valuesMap).toJson();
+        return attempt(() -> JsonUtils.dynamoObjectMapper.readValue(json, OrcidCredentials.class)).orElseThrow();
     }
 }

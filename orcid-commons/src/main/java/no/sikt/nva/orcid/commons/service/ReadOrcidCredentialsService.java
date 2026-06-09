@@ -1,33 +1,29 @@
 package no.sikt.nva.orcid.commons.service;
 
-import static java.util.Objects.isNull;
 import static no.sikt.nva.orcid.commons.OrcidConstants.ORCID_PRIMARY_PARTITION_KEY;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentHashMap;
 
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.sikt.nva.orcid.commons.model.storage.OrcidCredentialsDao;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 
 public class ReadOrcidCredentialsService {
 
     public static final String RESOURCE_NOT_FOUND_MESSAGE = "Could not find orcidCredentials";
-    private final AmazonDynamoDB client;
+    private final DynamoDbClient client;
     private final String orcidTableName;
 
-    public ReadOrcidCredentialsService(AmazonDynamoDB client, String orcidTableName) {
+    public ReadOrcidCredentialsService(DynamoDbClient client, String orcidTableName) {
         this.client = client;
         this.orcidTableName = orcidTableName;
     }
 
     public Map<String, AttributeValue> primaryKey(OrcidCredentials orcidCredentials) {
-        final Map<String, AttributeValue> map = new ConcurrentHashMap<>();
-        var partKeyValue = new AttributeValue(orcidCredentials.orcid().toString());
-        map.put(ORCID_PRIMARY_PARTITION_KEY, partKeyValue);
-        return map;
+        var partKeyValue = AttributeValue.builder().s(orcidCredentials.orcid().toString()).build();
+        return Map.of(ORCID_PRIMARY_PARTITION_KEY, partKeyValue);
     }
 
     protected OrcidCredentials getOrcidCredentials(OrcidCredentials orcidCredentials) {
@@ -37,12 +33,13 @@ public class ReadOrcidCredentialsService {
     }
 
     private Map<String, AttributeValue> getResourceByPrimaryKey(Map<String, AttributeValue> primaryKey) {
-        var result = client.getItem(new GetItemRequest()
-                                                  .withTableName(orcidTableName)
-                                                  .withKey(primaryKey));
-        if (isNull(result.getItem())) {
+        var result = client.getItem(GetItemRequest.builder()
+                                        .tableName(orcidTableName)
+                                        .key(primaryKey)
+                                        .build());
+        if (!result.hasItem()) {
             throw new NoSuchElementException(RESOURCE_NOT_FOUND_MESSAGE);
         }
-        return result.getItem();
+        return result.item();
     }
 }
