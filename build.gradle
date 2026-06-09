@@ -6,8 +6,3 @@ plugins{
 allprojects{
     apply plugin: 'nva.orcid.client.java-conventions'
 }
-
-wrapper {
-    gradleVersion = '8.12'
-    distributionType = Wrapper.DistributionType.ALL
-}
