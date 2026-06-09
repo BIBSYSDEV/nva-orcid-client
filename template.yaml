@@ -42,6 +42,8 @@ Globals:
       AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Location'"
       AllowOrigin: "'*'"
   Function:
+    Architectures:
+      - arm64
     Timeout: 900
     MemorySize: 1798
     Runtime: java21
@@ -146,7 +148,6 @@ Resources:
       CodeUri: orcid-rest
       Handler: no.sikt.nva.orcid.handlers.StoreOrcidCredentialsFunction::handleRequest
       Role: !GetAtt LambdaRole.Arn
-      MemorySize: 1798
       Environment:
         Variables:
           ALLOWED_ORIGIN: !Ref AllowedOrigins
