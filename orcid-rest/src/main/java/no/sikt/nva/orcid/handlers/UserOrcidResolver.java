@@ -7,7 +7,6 @@ import io.github.resilience4j.retry.RetryRegistry;
 import io.vavr.control.Try;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -19,27 +18,27 @@ import no.sikt.nva.orcid.model.CristinPersonResponse;
 import no.unit.nva.commons.json.JsonUtils;
 import nva.commons.core.JacocoGenerated;
 import nva.commons.core.attempt.Failure;
-import org.apache.http.client.utils.URIBuilder;
+import nva.commons.core.paths.UriWrapper;
 
 public class UserOrcidResolver {
 
     public static final String CRISTIN_API_ERROR_MESSAGE = "Cristin api answered with status: ";
-    public static final String HTTPS_SCHEME = "https";
     private static final String ACCEPT = "Accept";
     private static final String APPLICATION_JSON = "application/json";
-    private static final String CRISTIN_PERSON_PATH = "/cristin/person/";
+    private static final String CRISTIN_PATH = "cristin";
+    private static final String PERSON_PATH = "person";
 
     private final HttpClient httpClient;
-    private final String apiHost;
+    private final URI apiUri;
 
-    public UserOrcidResolver(HttpClient client, String apiHost) {
+    public UserOrcidResolver(HttpClient client, URI apiUri) {
         this.httpClient = client;
-        this.apiHost = apiHost;
+        this.apiUri = apiUri;
     }
 
     @JacocoGenerated
     public static UserOrcidResolver defaultUserOrcidResolver(String apiHost) {
-        return new UserOrcidResolver(HttpClient.newBuilder().build(), apiHost);
+        return new UserOrcidResolver(HttpClient.newBuilder().build(), UriWrapper.fromHost(apiHost).getUri());
     }
 
     public Optional<String> extractOrcidForUser(Integer cristinId) {
@@ -50,13 +49,10 @@ public class UserOrcidResolver {
                    .orElseThrow(this::handleFailure);
     }
 
-    private static String constructPersonPath(Integer cristinId) {
-        return CRISTIN_PERSON_PATH + cristinId;
-    }
-
-    private URI craftUserUri(Integer cristinId) throws URISyntaxException {
-        return
-            new URIBuilder().setHost(apiHost).setPath(constructPersonPath(cristinId)).setScheme(HTTPS_SCHEME).build();
+    private URI craftUserUri(Integer cristinId) {
+        return UriWrapper.fromUri(apiUri)
+                   .addChild(CRISTIN_PATH, PERSON_PATH, String.valueOf(cristinId))
+                   .getUri();
     }
 
     private RuntimeException handleFailure(Failure<Optional<String>> fail) {
