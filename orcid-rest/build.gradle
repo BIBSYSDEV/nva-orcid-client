@@ -1,16 +1,30 @@
+plugins {
+    id 'nva.orcid.client.java-conventions'
+}
+
 dependencies {
-    implementation project(":orcid-testutils")
-    implementation project(":orcid-commons")
-    implementation libs.nva.apigateway
-    implementation libs.nva.core
-    implementation libs.nva.json
-    implementation libs.bundles.logging
-
-    implementation libs.resilience4j.retry
-    implementation libs.vavr
-
-    implementation libs.aws.sdk.dynamodb
-
+    api(nvaCatalog.aws.lambda.core)
+    api(nvaCatalog.jackson.annotations)
+    api(nvaLibs.apigateway)
+    api(nvaLibs.core)
+    api(project(":orcid-commons"))
+    implementation('org.apache.httpcomponents:httpclient:4.5.13') // FIXME: Remove this, it's not needed
+    implementation(nvaCatalog.aws.sdk.dynamo)
+    implementation(nvaCatalog.jackson.core)
+    implementation(nvaCatalog.jackson.databind)
+    implementation(nvaCatalog.resilience4j.retry)
+    implementation(nvaCatalog.slf4j.api)
+    implementation(nvaCatalog.vavr)
+    implementation(nvaLibs.json)
+    testImplementation(nvaCatalog.hamcrest)
+    testImplementation(nvaCatalog.junit.jupiter.api)
+    testImplementation(nvaCatalog.mockito.core)
+    testImplementation(nvaCatalog.wiremock.core)
+    testImplementation(nvaCatalog.wiremock.junit5)
+    testImplementation(nvaLibs.testutils)
+    testImplementation(project(":orcid-testutils"))
+    testRuntimeOnly(nvaCatalog.junit.jupiter.engine)
+    testRuntimeOnly(nvaCatalog.junit.platform.launcher)
 }
 
 test{

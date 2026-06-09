@@ -1,18 +1,23 @@
+plugins {
+    id 'nva.orcid.client.java-conventions'
+}
+
 dependencies {
-    implementation project(":orcid-testutils")
-    implementation project(":orcid-constants")
-
-    implementation libs.nva.core
-    implementation libs.nva.json
-
-    implementation libs.aws.sdk.dynamodb
-
-    implementation libs.jackson.databind
-    implementation libs.jackson.annotations
-    implementation libs.jackson.datatype.jsr310
-    implementation libs.resilience4j.retry
-    implementation libs.vavr
-
-    testImplementation libs.nva.testutils
-
+    api(nvaCatalog.aws.sdk.dynamo)
+    api(nvaCatalog.jackson.annotations)
+    api(nvaCatalog.jackson.databind)
+    api(nvaLibs.json)
+    implementation(nvaCatalog.resilience4j.retry)
+    implementation(nvaCatalog.vavr)
+    implementation(nvaLibs.core)
+    implementation(project(":orcid-constants"))
+    runtimeOnly(nvaCatalog.jackson.datatype.jsr310)
+    testImplementation(nvaCatalog.aws.java.sdk.core)
+    testImplementation(nvaCatalog.hamcrest)
+    testImplementation(nvaCatalog.junit.jupiter.api)
+    testImplementation(nvaCatalog.mockito.core)
+    testImplementation(nvaLibs.testutils)
+    testImplementation(project(":orcid-testutils"))
+    testRuntimeOnly(nvaCatalog.junit.jupiter.engine)
+    testRuntimeOnly(nvaCatalog.junit.platform.launcher)
 }

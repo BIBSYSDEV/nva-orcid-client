@@ -1,8 +1,3 @@
 plugins{
     id 'nva.orcid.client.rootplugin'
 }
-
-//workaround for jacoco-merge to work
-allprojects{
-    apply plugin: 'nva.orcid.client.java-conventions'
-}
