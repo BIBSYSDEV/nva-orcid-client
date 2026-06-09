@@ -16,9 +16,9 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.GetItemResult;
-import com.amazonaws.services.kms.model.NotFoundException;
 import java.time.Clock;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.sikt.nva.orcid.commons.model.exceptions.TransactionFailedException;
@@ -68,9 +68,9 @@ public class OrcidServiceTest extends OrcidLocalTestDatabase {
     }
 
     @Test
-    void shouldThrowNotFoundExceptionWhenTryingToFetchNonExistingOrcidCredentials() {
+    void shouldThrowNoSuchElementExceptionWhenTryingToFetchNonExistingOrcidCredentials() {
         var orcid = randomUri();
-        assertThrows(NotFoundException.class, () -> orcidService.fetchOrcidCredentialsByOrcid(orcid));
+        assertThrows(NoSuchElementException.class, () -> orcidService.fetchOrcidCredentialsByOrcid(orcid));
     }
 
     @Test

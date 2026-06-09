@@ -28,7 +28,7 @@ public class OrcidLocalTestDatabase {
 
     public void init(String orcidTableName) {
         setOrcidTableName(orcidTableName);
-        client = DynamoDBEmbedded.create().amazonDynamoDB();
+        client = DynamoDBEmbedded.create(null, true).amazonDynamoDB();
         CreateTableRequest request = createTableRequest();
         client.createTable(request);
     }

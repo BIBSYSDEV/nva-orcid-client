@@ -5,8 +5,8 @@ import static no.sikt.nva.orcid.constants.OrcidConstants.ORCID_PRIMARY_PARTITION
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
-import com.amazonaws.services.kms.model.NotFoundException;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
@@ -41,7 +41,7 @@ public class ReadOrcidCredentialsService {
                                                   .withTableName(orcidTableName)
                                                   .withKey(primaryKey));
         if (isNull(result.getItem())) {
-            throw new NotFoundException(RESOURCE_NOT_FOUND_MESSAGE);
+            throw new NoSuchElementException(RESOURCE_NOT_FOUND_MESSAGE);
         }
         return result.getItem();
     }
