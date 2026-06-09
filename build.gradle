@@ -5,7 +5,6 @@ plugins{
 //workaround for jacoco-merge to work
 allprojects{
     apply plugin: 'nva.orcid.client.java-conventions'
-    apply plugin: 'nva.orcid.client.dynamo-db'
 }
 
 wrapper {
