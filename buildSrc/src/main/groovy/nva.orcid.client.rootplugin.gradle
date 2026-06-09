@@ -9,9 +9,4 @@ nva {
     spotless {
         enabled = false
     }
-    jacoco {
-        // FIXME: Remove dead code and add tests for remaining gaps
-        minMethodCoverage = new BigDecimal('0.920')
-        minClassCoverage = new BigDecimal('0.920')
-    }
 }

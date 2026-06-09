@@ -1,5 +1,6 @@
 plugins {
     id 'nva.orcid.client.java-conventions'
+    id 'java-test-fixtures'
 }
 
 dependencies {
@@ -10,14 +11,16 @@ dependencies {
     implementation(nvaCatalog.resilience4j.retry)
     implementation(nvaCatalog.vavr)
     implementation(nvaLibs.core)
-    implementation(project(":orcid-constants"))
     runtimeOnly(nvaCatalog.jackson.datatype.jsr310)
+    testFixturesApi(nvaCatalog.aws.sdk.dynamo)
+    testFixturesApi(nvaCatalog.junit.jupiter.api)
+    testFixturesImplementation(nvaCatalog.aws.dynamodb.local)
+    testFixturesImplementation(nvaLibs.core)
     testImplementation(nvaCatalog.aws.java.sdk.core)
     testImplementation(nvaCatalog.hamcrest)
     testImplementation(nvaCatalog.junit.jupiter.api)
     testImplementation(nvaCatalog.mockito.core)
     testImplementation(nvaLibs.testutils)
-    testImplementation(project(":orcid-testutils"))
     testRuntimeOnly(nvaCatalog.junit.jupiter.engine)
     testRuntimeOnly(nvaCatalog.junit.platform.launcher)
 }

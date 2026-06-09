@@ -1,6 +1,6 @@
-package no.sikt.nva.orcid.testutils.service;
+package no.sikt.nva.orcid.commons;
 
-import static no.sikt.nva.orcid.constants.OrcidConstants.ORCID_PRIMARY_PARTITION_KEY;
+import static no.sikt.nva.orcid.commons.OrcidConstants.ORCID_PRIMARY_PARTITION_KEY;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;

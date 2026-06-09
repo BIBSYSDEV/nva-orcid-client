@@ -22,7 +22,7 @@ dependencies {
     testImplementation(nvaCatalog.wiremock.core)
     testImplementation(nvaCatalog.wiremock.junit5)
     testImplementation(nvaLibs.testutils)
-    testImplementation(project(":orcid-testutils"))
+    testImplementation(testFixtures(project(":orcid-commons")))
     testRuntimeOnly(nvaCatalog.junit.jupiter.engine)
     testRuntimeOnly(nvaCatalog.junit.platform.launcher)
 }
