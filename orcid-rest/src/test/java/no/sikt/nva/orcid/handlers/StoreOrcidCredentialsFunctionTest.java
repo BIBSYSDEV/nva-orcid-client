@@ -61,8 +61,7 @@ class StoreOrcidCredentialsFunctionTest extends OrcidLocalTestDatabase {
         stubForPersonResponse();
         this.orcidService = new OrcidServiceImpl(ORCID_TABLE_NAME, client, Clock.systemDefaultZone());
         this.userOrcidResolver = new UserOrcidResolver(WiremockHttpClient.create(),
-                                                       wireMockRuntimeInfo.getHttpsBaseUrl().replace(
-                                                           "https://", ""));
+                                                       URI.create(wireMockRuntimeInfo.getHttpsBaseUrl()));
         this.handler = new StoreOrcidCredentialsFunction(orcidService, userOrcidResolver, new Environment());
         outputStream = new ByteArrayOutputStream();
     }
