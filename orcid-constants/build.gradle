@@ -1,7 +1,0 @@
-plugins {
-    id 'nva.orcid.client.java-conventions'
-}
-
-dependencies {
-
-}

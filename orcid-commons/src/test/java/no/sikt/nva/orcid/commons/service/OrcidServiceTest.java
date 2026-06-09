@@ -23,7 +23,7 @@ import java.util.NoSuchElementException;
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.sikt.nva.orcid.commons.model.exceptions.TransactionFailedException;
 import no.sikt.nva.orcid.commons.model.storage.OrcidCredentialsDao;
-import no.sikt.nva.orcid.testutils.service.OrcidLocalTestDatabase;
+import no.sikt.nva.orcid.commons.OrcidLocalTestDatabase;
 import nva.commons.core.paths.UriWrapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

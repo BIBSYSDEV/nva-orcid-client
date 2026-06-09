@@ -27,10 +27,10 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.time.Clock;
 
+import no.sikt.nva.orcid.commons.OrcidLocalTestDatabase;
 import no.sikt.nva.orcid.commons.model.business.OrcidCredentials;
 import no.sikt.nva.orcid.commons.service.OrcidService;
 import no.sikt.nva.orcid.commons.service.OrcidServiceImpl;
-import no.sikt.nva.orcid.testutils.service.OrcidLocalTestDatabase;
 import no.sikt.nva.orcid.utils.FakeOrcidServiceImplThrowingException;
 import no.unit.nva.stubs.WiremockHttpClient;
 import no.unit.nva.testutils.HandlerRequestBuilder;
