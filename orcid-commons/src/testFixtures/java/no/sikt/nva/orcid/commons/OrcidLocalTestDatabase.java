@@ -1,7 +1,6 @@
 package no.sikt.nva.orcid.commons;
 
 import static no.sikt.nva.orcid.commons.OrcidConstants.ORCID_PRIMARY_PARTITION_KEY;
-import com.amazonaws.services.dynamodbv2.local.embedded.DynamoDBEmbedded;
 import java.util.Collection;
 import java.util.List;
 import nva.commons.core.JacocoGenerated;
@@ -13,6 +12,7 @@ import software.amazon.awssdk.services.dynamodb.model.CreateTableRequest;
 import software.amazon.awssdk.services.dynamodb.model.KeySchemaElement;
 import software.amazon.awssdk.services.dynamodb.model.KeyType;
 import software.amazon.awssdk.services.dynamodb.model.ScalarAttributeType;
+import software.amazon.dynamodb.services.local.embedded.DynamoDBEmbedded;
 
 @JacocoGenerated
 public class OrcidLocalTestDatabase {

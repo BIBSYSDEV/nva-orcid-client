@@ -15,7 +15,7 @@ dependencies {
     runtimeOnly(nvaCatalog.jackson.datatype.jsr310)
     testFixturesApi(nvaCatalog.aws.sdk2.dynamo)
     testFixturesApi(nvaCatalog.junit.jupiter.api)
-    testFixturesImplementation(nvaCatalog.aws.dynamodb.local)
+    testFixturesImplementation(nvaCatalog.aws.sdk2.dynamodblocal)
     testFixturesImplementation(nvaLibs.core)
     testImplementation(nvaCatalog.hamcrest)
     testImplementation(nvaCatalog.junit.jupiter.api)
