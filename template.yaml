@@ -46,7 +46,7 @@ Globals:
       - arm64
     Timeout: 900
     MemorySize: 1798
-    Runtime: java21
+    Runtime: java25
     Tracing: Active
     Environment:
       Variables:
