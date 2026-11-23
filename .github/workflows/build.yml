@@ -13,7 +13,7 @@ on:
 
 jobs:
   build:
-    uses: BIBSYSDEV/nva-github-workflows/.github/workflows/java.yml@v2
+    uses: BIBSYSDEV/nva-github-workflows/.github/workflows/java.yml@2026-11-23-1-gradle-cache
     with:
       java_version: "25"
       openapi_files: "docs/*.yaml"
